@@ -1,0 +1,171 @@
+.responsiveImg{
+    width: 100%;
+    height: auto;
+}
+
+.form-control{
+   border-width: 2px !important;
+   border-color:#858282;
+}
+
+.form-control:focus{
+   box-shadow: 0 0 0 0.25rem rgb(179 109 223 / 25%) !important;
+   border-color: #7123a1;
+}
+
+.rbt-input-main {
+    padding-right: 50px !important;
+}
+
+.rbt {
+    width: 400px !important;
+}
+
+.rbt-aux {
+    width: auto !important;
+}
+
+.close{
+    pointer-events: auto;
+    padding: 0;
+    padding-right: 10px;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 1.4rem !important;
+    color: #858282 !important;
+}
+
+.bg-hossein {
+    opacity: 1;
+    /* background-color: #bfc2c5 !important; */
+    background-color: #979799 !important;
+}
+
+.navbar{
+    background-color: #ceb7dd;
+    padding-left: 45px;
+    padding-right: 45px;
+    --bs-navbar-hover-color:  #7123a1 !important;
+    --bs-navbar-active-color: #7123a1 !important;
+}
+
+.menuNavbar{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.menubar{
+    margin-left: -20px !important;
+}
+
+.nav-link{
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    font-weight: bold !important;
+}
+
+.nav-link{
+    /* color: rgb(24, 23, 23); */
+    color: white;
+
+}
+
+.btn-primary {
+    --bs-btn-color: #7123a1 !important;
+    --bs-btn-hover-color: #7123a1 !important;
+    --bs-btn-active-color: #7123a1 !important;
+    --bs-btn-bg: #fff !important;
+    --bs-btn-hover-bg: #fff !important;
+    --bs-btn-active-bg: #fff !important;
+}
+
+
+
+.dropdown-item:hover{
+    background-color: #edd8fa;
+}
+
+.favouriteButt{
+    background-image: url('../Header/heart.png');
+    background-size: cover;
+    background-position-x: 0;
+    background-position-y: 0;
+    min-width: 50px;
+    min-height: 50px;
+    font-size: 15px;
+    font-weight: bold; 
+    padding: 0;
+    border: none;
+    margin: 0;
+}
+
+.smallFavouriteButt:before{
+    background-color: #6DB3F2;
+}
+.smallFavouriteButt{
+    background-image: url('../Header/heart.png'); 
+    background-size: cover;
+    background-position-x: 0;
+    background-position-y: 0;
+    min-width: 50px;
+    min-height: 50px;
+    font-size: 15px;
+    font-weight: bold; 
+    padding: 0;
+    border: none;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.offcanvas-header{
+    border-bottom: 2px solid #7123a1;
+}
+
+@media screen and (max-width: 1200px) {
+    .navbar {
+         padding-left: 0px; 
+         padding-right: 0px;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .rbt {
+        width: 70% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .navbar-brand{
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+
+    .nav-link{
+        /* color: rgb(24, 23, 23); */
+        color: black;
+    
+    }
+
+}
+
+@media screen and (max-width: 599px) {
+    .rbt {
+        width: 100% !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media screen and (max-width: 349px) {
+    
+    .navbar-toggler{
+        padding: 0.15rem  0.35rem !important;
+    }
+
+    .navbar-toggler-icon{
+        width: 1.3em;
+        height: 1.3em;
+    }
+}

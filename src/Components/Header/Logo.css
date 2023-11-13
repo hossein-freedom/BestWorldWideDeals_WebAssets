@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Concert+One&family=Sriracha&display=swap');
+
+
+.logo a{
+  text-decoration:none !important;
+}
+
+.logo-holder{
+    text-align:center;
+}
+
+.logo span{
+    float: left;
+    color: #7123a1;
+    /* font-family: 'Concert One', cursive;       */
+    font-family: 'Sriracha', cursive;       
+    font-weight: 200;
+    /* font-size: 48px; */
+    /* padding: 10px; */
+    /* padding-left: 0; */
+}
+
+
+@media screen and (min-width: 992px) {
+  
+  .logo span{
+    font-size: 48px;
+    padding: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .logo span{
+    font-size: 28px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+
+  @media screen and (max-width: 349px) {
+    .logo span{
+      font-size: 20px;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 0;
+    }
+  }
+
+}
