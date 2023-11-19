@@ -327,6 +327,7 @@ function Header() {
   return (
     windowSize.innerWidth >= 992 ? 
               <>
+              <section style={{"position":"fixed", "width":"100%", "top":"0", "z-index":"10000"}}>
                 <Navbar bg="white" expand="lg">
                   <Container fluid>
                     <Navbar.Brand href="#">
@@ -368,6 +369,7 @@ function Header() {
                     </Nav> 
                   </Container>
                 </Navbar>
+                </section>
               </> :
               <>
                 <Navbar bg="white" expand="lg">

@@ -39,6 +39,7 @@
 
 :root{
   --viewWidth: 2000px;
+  padding-top: 150px;
 }
 
 .container-fluid{

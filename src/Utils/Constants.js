@@ -1,5 +1,16 @@
 'use strict';
 
+export const PRODUCT_SOURCES = [
+  {
+    name: "AMAZON",
+    value: "AMAZON",
+  },
+  {
+    name: "ClickBank",
+    value: "ClickBank",
+  },
+];
+
 const data = [
     {
       label: 'Alabama',

@@ -41,15 +41,19 @@
 .bg-hossein {
     opacity: 1;
     /* background-color: #bfc2c5 !important; */
-    background-color: #979799 !important;
+    /* background-color: #979799 !important; */
+    /* background-color: #444950 !important; */
+    background-color: #7123a1 !important;
 }
 
 .navbar{
     background-color: #ceb7dd;
     padding-left: 45px;
     padding-right: 45px;
-    --bs-navbar-hover-color:  #7123a1 !important;
-    --bs-navbar-active-color: #7123a1 !important;
+    min-width: 280px;
+    /*#7123a1 , #adb5bd , edd8fa*/
+    --bs-navbar-hover-color:  rgb(229, 196, 250)    !important;
+    --bs-navbar-active-color: rgb(229, 196, 250)    !important;
 }
 
 .menuNavbar{
@@ -84,7 +88,8 @@
 
 
 .dropdown-item:hover{
-    background-color: #edd8fa;
+    /*#edd8fa*/
+    background-color: rgb(229, 196, 250);
 }
 
 .favouriteButt{
