@@ -2,23 +2,43 @@
 
 import './AdminProduct.css'
 import Container from 'react-bootstrap/Container';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { PRODUCT_SOURCES } from '../../../Utils/Constants';
 import * as formik from 'formik';
 import * as yup from 'yup';
+import { useRef } from "react";
+import { CloseButton, ListGroup } from 'react-bootstrap';
+import API from '../../../Utils/api/api'; 
 
 
 function AdminProduct(){
 
-    const [categories, setCategories] = useState(["Other","test1"]);
+    const [categories, setCategories] = useState([]);
     const [isCategoryInputActive, setIsCategoryInputActive] = useState(false);
     const [isSubCategoryInputActive, setIsSubCategoryInputActive] = useState(false);
     const [subCategories, setSubCategories] = useState([]);
 
+
+    useEffect(() => {
+        API.getData({
+            url: "/getproductcategories",
+            params: {}
+        }).then((response)=>{
+            setCategories(response.data.data);
+        })
+    },[])
+
+    const fileRef = useRef();
+
     const getSubCategories = (category) => {
-        //To DO: make API call to get subcategories
+        API.getData({
+            url: `/getproductsubcategories/${category}`,
+            params: {}
+        }).then((response)=>{
+            setSubCategories(response.data.data);
+        })
     } 
 
     const handleSubmit = (values) => {
@@ -52,7 +72,27 @@ function AdminProduct(){
         isonsale: yup.bool(),
         saleprice: yup.number(),
         hasbannercode: yup.bool(),
-        bannercode: yup.string()
+        bannercode: yup.string(),
+        files: yup.mixed()
+                .test("files_length", "You can only select up to 5 files", 
+                        function(value) {
+                            if(value.length > 5){
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        })
+                .test("files_type", "You can only select image files", 
+                        function(value) {
+                            if(Object.values(value).filter((file)=>{
+                                            return ["image/jpeg","image/png","image/jpg","image/gif"].includes(file.type);         
+                                }).length < value.length){
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        })        
+                .required()        
 
     });
 
@@ -79,7 +119,8 @@ function AdminProduct(){
                     isonsale: false,
                     saleprice: 0.0,
                     hasbannercode: false,
-                    bannercode: ''
+                    bannercode: '',
+                    files: []
                 }}
                 >
                 {({ handleSubmit, handleChange,  setFieldValue, values, touched, errors }) => (
@@ -124,6 +165,7 @@ function AdminProduct(){
                                                          if(e.currentTarget.value === "Other"){
                                                             setIsCategoryInputActive(true);
                                                          }else{
+                                                            getSubCategories(e.currentTarget.value);
                                                             setIsCategoryInputActive(false);
                                                             setFieldValue("othercategory",'');
                                                          }
@@ -131,7 +173,7 @@ function AdminProduct(){
                                                     }
                                         isInvalid={touched.category && !!errors.category} >
                                 <option selected value="none">Select a category</option>                        
-                                {categories.map(s=> <option value={s}>{s}</option>)}
+                                {categories.map((s)=> <option value={s}>{s}</option>)}
                             </Form.Select>
                             <Form.Control.Feedback type="invalid">
                                 You must select a category
@@ -318,6 +360,32 @@ function AdminProduct(){
                                         onChange={handleChange}
                             />
                         </Form.Group>}
+                        <Form.Group className="mb-3" controlId="validationFormik10">
+                            <Form.Label className='formLabel'>File</Form.Label>
+                            <Form.Control className='formControl'
+                                        ref={fileRef}
+                                        type="file"
+                                        name="files"
+                                        value={undefined}
+                                        onChange={(e)=>{
+                                            setFieldValue("files",fileRef.current.files)  
+                                        }}
+                                        multiple
+                                        isInvalid={!!errors.files}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.files}
+                            </Form.Control.Feedback>
+                            <ListGroup className="fineNameDiv" as="ol">
+                            {values.files.length > 0 && 
+                                Object.values(values.files).map((file,index)=><ListGroup.Item className="fileNames" as="li">{file.name}
+                                            <CloseButton onClick={(e)=>{
+                                                setFieldValue("files",
+                                                    Object.values(values.files).toSpliced(index,1));
+                                            }} className="fileRemove"/></ListGroup.Item>)
+                            }
+                            </ListGroup>
+                        </Form.Group>
                     <Button className="formButton" variant="primary" type="submit">
                         Submit
                     </Button>

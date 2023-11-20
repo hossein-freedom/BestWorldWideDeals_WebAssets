@@ -372,6 +372,7 @@ function Header() {
                 </section>
               </> :
               <>
+              <section style={{"position":"fixed", "width":"100%", "top":"0", "z-index":"10000"}}>
                 <Navbar bg="white" expand="lg">
                   <Container fluid>
                     <Navbar.Brand href="#">
@@ -382,6 +383,7 @@ function Header() {
                         id={`offcanvasNavbar-expand`}
                         aria-labelledby="offcanvasNavbarLabel-expand"
                         placement="end"
+                        style={{"z-index":"12000"}}
                     >
                         <Offcanvas.Header closeButton>
                           <Offcanvas.Title id={`offcanvasNavbarLabel-expand`}>
@@ -424,6 +426,7 @@ function Header() {
                     </Typeahead>
                   </Container>
                 </Navbar>
+                </section>
               </>
   );
 }
