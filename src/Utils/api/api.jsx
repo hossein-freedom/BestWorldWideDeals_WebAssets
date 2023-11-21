@@ -28,15 +28,19 @@ export default {
                     };
         }],
     }),
-    // postData: () =>
-    // instance({
-    //     'method': 'POST',
-    //     'url':'/api',
-    //     'data': {
-    //         'item1':'data1',
-    //         'item2':'item2'
-    //     },
-    //     'headers': { 'content-type':'application/json' // override instance defaults
-    //     },
-    //})
+    postData: (props) =>
+    instance({
+        'method': 'POST',
+        'url':props.url,
+        'data': props.params,
+        'headers': { 'content-type':props.contentType }, // override instance defaults
+        transformResponse: [function (data) {
+            // Do whatever you want to transform the data
+            console.log('Transforming data...')
+            const json = JSON.parse(data)
+            return  {
+                        data:json
+                    };
+        }]        
+    })
 }

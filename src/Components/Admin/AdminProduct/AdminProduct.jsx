@@ -41,8 +41,44 @@ function AdminProduct(){
         })
     } 
 
+    const getTime = (date) => { return new Date(date).valueOf(); };
+
     const handleSubmit = (values) => {
-        console.log(values);
+        const prodData = {
+            "title": values.title,
+            "description": values.description,
+            "category": values.category === "Other" ? values.othercategory : values.category,
+            "subCategory": values.subcategory === "Other" ? values.othersubcategory : values.subcategory,
+            "email": values.email,
+            "sellerWebsite": values.websitelink,
+            "affiliateLink": values.affiliatelink,
+            "endDate": getTime(values.expirydate),
+            "source": values.source,
+            "isActive": values.isactive,
+            "price": values.price,
+            "isOnSale": values.isonsale,
+            "salePrice": values.saleprice,
+            "bannerCode": values.bannercode
+
+        }
+        API.postData({
+            url: "/saveproduct",
+            params: prodData,
+            contentType: "application/json"
+        }).then((response)=>{
+            const prodId = response.data.data.productId;
+            const formData = new FormData();
+            Object.values(values.files).forEach((element,index) => {
+                formData.append("images",element);
+            });
+            console.log("id => "+prodId);
+            API.postData({
+                url: `/uploadimages/${prodId}`,
+                params: formData,
+                contentType: "multipart/form-data"
+            });
+        });
+
     }
   
     const { Formik } = formik;
@@ -262,7 +298,7 @@ function AdminProduct(){
                                         value={values.affiliatelink} 
                                         onChange={handleChange}
                                         type="text" 
-                                        placeholder="Enter email" 
+                                        placeholder="Enter affiliate link" 
                                         isInvalid={touched.affiliatelink && !!errors.affiliatelink}/>
                         <Form.Control.Feedback type="invalid">
                             {errors.affiliatelink}
@@ -301,7 +337,7 @@ function AdminProduct(){
                             type="switch"
                             label="Is Product Active?"
                             id="no_radio"
-                            onChange={(e) => { setFieldValue("isActive",!values.isActive);}}
+                            onChange={(e) => { setFieldValue("isactive",!values.isactive);}}
                         /> 
                     </Form.Group> 
                     <Form.Group className="mb-3">
