@@ -1,4 +1,4 @@
-.productDiv{
+.productDiv, .productSearchDiv{
    margin-left: auto;
    margin-right: auto;      
    background-color: #212529;  
@@ -40,6 +40,10 @@
     outline: 0;
 }
 
+.customModal{
+    z-index:"14000" !important;
+}
+
 .formButton {
     --bs-btn-color: #fff !important;
     --bs-btn-bg: #0d6efd !important;
@@ -55,10 +59,9 @@
     --bs-btn-disabled-color: #fff !important;
     --bs-btn-disabled-bg: #0d6efd !important;
     --bs-btn-disabled-border-color: #0d6efd !important;
-    margin-top: 25px !important;
 }
 
-.fineNameDiv{
+.fileNameDiv{
     margin-top: 15px;
     border: 1px solid #495057;
 }
@@ -92,9 +95,26 @@
     box-shadow:none;
 }
 
+.updateImages{
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    height: auto;
+}
+
+.deleteImageBut{
+    margin-bottom: 50px;
+    width: 100%;
+} 
+
+.breadcrumb{
+    margin-top: 25px;
+    padding-left: 45px;
+}
 
 @media screen and (min-width: 800px) {
-    .productDiv{
+    .productDiv, .productSearchDiv{
         margin-top: 50px;
         margin-bottom: 50px;
         width: 700px;
@@ -103,7 +123,7 @@
 }
 
 @media screen and (max-width: 799px) {
-    .productDiv{
+    .productDiv, .productSearchDiv{
         margin-top: 30px;
         margin-bottom: 30px;
         width: 80%;

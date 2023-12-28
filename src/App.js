@@ -22,7 +22,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard/>}>
               {/* <Route path="product" element={<AdminProduct/>}/> */}
           </Route>
-          <Route path="/admin/product" element={<AdminProduct/>}/>
+          <Route path="/admin/product/:actionType" element={<AdminProduct/>}/>
         </Routes>
       </BrowserRouter>
     </>

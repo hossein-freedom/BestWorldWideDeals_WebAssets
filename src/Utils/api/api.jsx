@@ -42,5 +42,27 @@ export default {
                         data:json
                     };
         }]        
+    }),
+    deleteData: (props) =>
+    instance({
+        'method': 'DELETE',
+        'url':props.url,
+        'data': props.params,
+        'headers': { 'content-type':props.contentType },
+        transformResponse: [function (data) {
+            // Do whatever you want to transform the data
+            console.log('Transforming data...')
+            const json = JSON.parse(data)
+            return  {
+                        data:json
+                    };
+        }]        
+    }),
+    updateData: (props) =>
+    instance({
+        'method': 'PUT',
+        'url':props.url,
+        'data': props.params,
+        'headers': { 'content-type':props.contentType }
     })
 }
