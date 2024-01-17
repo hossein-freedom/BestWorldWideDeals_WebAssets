@@ -3,7 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../src/Components/Header/Header';
 import Dashboard from '../src/Components/Dashboard/Dashboard'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import AdminDashboard from './Components/Admin/AdminDashboard/AdminDashboard';
 import AdminProduct from './Components/Admin/AdminProduct/AdminProduct';
 import SearchResult from './Components/Search/SearchResult';
@@ -17,7 +17,7 @@ function App() {
   return (
     <>{console.log(window.location.href)}
       <Header/>
-      <BrowserRouter>
+      <>
         <Routes>
           <Route path="/" element={<Dashboard/>}></Route>
           <Route path="/search" element={<SearchResult/>}></Route>
@@ -26,7 +26,7 @@ function App() {
           </Route>
           <Route path="/admin/product/:actionType" element={<AdminProduct/>}/>
         </Routes>
-      </BrowserRouter>
+      </>
     </>
   );
 }

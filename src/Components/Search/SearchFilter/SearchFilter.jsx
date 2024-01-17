@@ -15,6 +15,8 @@ function SearchFilter(props){
     const [fromPrice, setFromPrice] = useState(0);
     const [toPrice, setToPrice] = useState(1);
     const [selectedCategories, setSelectedCategories] = useState(props.categories.selected);
+    const [sources, setSources] = useState(props.sources);
+    const [selectedSources, setSelectedSources] = useState([]);
     const [subCategories, setSubCategories] = useState(props.subCategories);
     const [selectedSubCategories, setSelectedSubCategories] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +71,18 @@ function SearchFilter(props){
         }
         props.refresh.func(!props.refresh.key);
     }
+
+    const updateSource = (checked, selectedSource) => {
+        if(checked){
+            selectedSources.push(selectedSource);
+            setSelectedSources(selectedSources);
+        }else{
+            setSelectedSources(selectedSources.filter( source => 
+                source !== selectedSource
+                ));
+        }
+    }
+
 
     const getCategorySection = (checked, category) => {
         return  <>
@@ -142,6 +156,26 @@ function SearchFilter(props){
                                 getCategorySection(false ,category)
                         )
                     }    
+                    <br />
+                </div>
+                <div className="filterGroup">
+                    <p className="filterGroupTitle">
+                        Source:
+                    </p>
+                    {sources.map( source => {
+                        return selectedSources.includes(source) ? 
+                                <Form.Check 
+                                    checked 
+                                    type="checkbox"
+                                    label={source}
+                                    onChange={(event) => updateSource(event.target.checked, source)}
+                                    /> :
+                                <Form.Check  
+                                    type="checkbox"
+                                    label={source}
+                                    onChange={(event) => updateSource(event.target.checked, source)}
+                                    />        
+                    })}
                     <br />
                 </div>
             </Stack>}

@@ -11,6 +11,10 @@ export const PRODUCT_SOURCES = [
   },
 ];
 
+
+
+export const SEARCH_TERM = "search_term";
+
 const data = [
     {
       label: 'Alabama',
