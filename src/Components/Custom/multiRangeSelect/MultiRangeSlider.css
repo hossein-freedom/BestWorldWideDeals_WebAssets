@@ -7,7 +7,6 @@
    */
   .slider {
     position: relative;
-    width: 200px;
   }
   
   .slider__track,
@@ -104,3 +103,84 @@
     pointer-events: all;
     position: relative;
   }
+
+@media screen and (max-width: 991px) {
+    .slider {
+      width: 240px;
+    }
+    .thumb {
+      width: 240px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+  .slider {
+    width: 180px;
+  }
+  .thumb {
+    width: 180px;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .slider {
+    width: 200px;
+  }
+  .thumb {
+    width: 200px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .slider {
+    width: 210px;
+  }
+  .thumb {
+    width: 210px;
+  }
+}
+
+@media screen and (min-width: 1300px) {
+  .slider {
+    width: 220px;
+  }
+  .thumb {
+    width: 220px;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .slider {
+    width: 230px;
+  }
+  .thumb {
+    width: 230px;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  .slider {
+    width: 240px;
+  }
+  .thumb {
+    width: 240px;
+  }
+}
+
+@media screen and (min-width: 1900px) {
+  .slider {
+    width: 250px;
+  }
+  .thumb {
+    width: 250px;
+  }
+}
+
+@media screen and (min-width: 2000px) {
+  .slider {
+    width: 260px;
+  }
+  .thumb {
+    width: 260px;
+  }
+}

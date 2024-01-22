@@ -46,6 +46,11 @@
     background-color: #7123a1 !important;
 }
 
+.filterIcon{
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .navbar{
     background-color: #ceb7dd;
     padding-left: 45px;
@@ -54,10 +59,6 @@
     /*#7123a1 , #adb5bd , edd8fa*/
     --bs-navbar-hover-color:  rgb(229, 196, 250)    !important;
     --bs-navbar-active-color: rgb(229, 196, 250)    !important;
-}
-
-.menuNavbar{
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .menubar{
@@ -135,6 +136,13 @@
     }
 }
 
+@media screen and (min-width: 992px) {
+    .menuNavbar{
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    }
+}
+
+
 @media screen and (max-width: 991px) {
     .rbt {
         width: 70% !important;
@@ -152,7 +160,6 @@
         color: black;
     
     }
-
 }
 
 @media screen and (max-width: 599px) {
@@ -166,7 +173,9 @@
 @media screen and (max-width: 349px) {
     
     .navbar-toggler{
-        padding: 0.15rem  0.35rem !important;
+        padding-right: 0.15rem  !important; 
+        padding-left: 0.15rem  !important;
+        padding-top: 0.35rem  !important;
     }
 
     .navbar-toggler-icon{

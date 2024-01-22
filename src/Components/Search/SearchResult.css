@@ -1,19 +1,102 @@
+.row{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
 .searcResultContainer{
     padding-top: 50px;
-    padding-left: 55px;
-    padding-right: 55px;
 }
 
 .searchResultsFilter{
     border-radius: 15px !important; 
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
     background-color: #ffffff;
-    width: 100%;
+    width: 20%;
     height: auto;
 }
 
 .searchResults{
     background-color: aquamarine;
-    width: 100%;
     height: 400px;
+}
+
+.smallExtraNavbar{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.bg-small-extra-nav {
+    opacity: 1;
+    background-color: #f6f6f7 !important;
+}
+
+.filterIcon{
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+@media screen and (max-width: 2000px) {
+    .searcResultContainer{
+        padding-left: 55px;
+        padding-right: 55px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .searchResults{
+        width: 75%;
+    }
+
+    .searchResultsFilter{
+        width: 25%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .searchResults{
+        width: 77%;
+    }
+
+    .searchResultsFilter{
+        width: 23%;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .searchResults{
+        width: 78%;
+    }
+
+    .searchResultsFilter{
+        width: 22%;
+    }
+}
+
+@media screen and (min-width: 1500px) {
+    .searchResults{
+        width: 80%;
+    }
+
+    .searchResultsFilter{
+        width: 20%;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .searchResults{
+        width: 82%;
+    }
+
+    .searchResultsFilter{
+        width: 18%;
+    }
+}
+
+@media screen and (min-width: 1700px) {
+    .searchResults{
+        width: 83%;
+    }
+
+    .searchResultsFilter{
+        width: 17%;
+    }
 }

@@ -3,6 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 export const search = createSlice({
     name: "searchTerms",
     initialState: {
+        loading: false,
+        filterOpen: false,
         value : { 
             searchType: "",
             searchValue: ""
@@ -17,10 +19,13 @@ export const search = createSlice({
         // Also, no return statement is required from these functions.
         state.value = newValue.payload
       },
+      updateFiltersOpen: (state, idOpen) => {
+        state.filterOpen = idOpen;
+      }
     },
   })
   
   // Action creators are generated for each case reducer function
-  export const { updateSearchTerm } = search.actions
+  export const { updateSearchTerm, updateFiltersOpen } = search.actions
   
   export default search.reducer

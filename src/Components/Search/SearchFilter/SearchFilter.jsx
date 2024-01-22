@@ -5,7 +5,7 @@ import './SearchFilter.css';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Stack from 'react-bootstrap/Stack';
 
-import { Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import api from '../../../Utils/api/api';
 import MultiRangeSlider from '../../Custom/multiRangeSelect/MultiRangeSlider'
@@ -13,7 +13,7 @@ import MultiRangeSlider from '../../Custom/multiRangeSelect/MultiRangeSlider'
 function SearchFilter(props){
 
     const [fromPrice, setFromPrice] = useState(0);
-    const [toPrice, setToPrice] = useState(1);
+    const [toPrice, setToPrice] = useState(1000);
     const [selectedCategories, setSelectedCategories] = useState(props.categories.selected);
     const [sources, setSources] = useState(props.sources);
     const [selectedSources, setSelectedSources] = useState([]);
@@ -25,10 +25,6 @@ function SearchFilter(props){
         initiateSelectedSubCategories(selectedCategories);
     },[])
 
-    useEffect(()=>{
-        props.refresh.func(!props.refresh.key);
-    },[selectedCategories, selectedSubCategories])
-
     const initiateSelectedSubCategories = (categories) => {
         categories.map( category => {
                 selectedSubCategories[category] = [];
@@ -36,19 +32,25 @@ function SearchFilter(props){
                     selectedSubCategories[category].push(subCategory)
                 );
         });
+        props.updateFunctions.categories(selectedCategories);   
         setSelectedSubCategories(selectedSubCategories);
+        props.updateFunctions.subCategories(selectedSubCategories);
     }
    
     const updateCategories = (checked, category) => {
         if (checked === true && !selectedCategories.includes(category)){
             selectedCategories.push(category);
-            setSelectedCategories(selectedCategories);   
+            setSelectedCategories(selectedCategories);
+            props.updateFunctions.categories(selectedCategories);   
             selectedSubCategories[category] = subCategories[category];
             setSelectedSubCategories(selectedSubCategories);
+            props.updateFunctions.subCategories(selectedSubCategories);
         }else if (checked === false && selectedCategories.includes(category)){
             setSelectedCategories(selectedCategories.filter( cat => category !== cat ));
+            props.updateFunctions.categories(selectedCategories.filter( cat => category !== cat ));
             delete selectedSubCategories[category];
             setSelectedSubCategories(selectedSubCategories);
+            props.updateFunctions.subCategories(selectedSubCategories);
         }
         props.refresh.func(!props.refresh.key);
     }
@@ -63,11 +65,13 @@ function SearchFilter(props){
         }else if (checked === false){ 
             if (selectedSubCategories[category] && selectedSubCategories[category].length === 1){
                 setSelectedCategories(selectedCategories.filter( cat => category !== cat ));
+                props.updateFunctions.categories(selectedCategories.filter( cat => category !== cat ));
                 delete selectedSubCategories[category];
             }else{
                 selectedSubCategories[category] = selectedSubCategories[category].filter(subCat => subCat !== subCategory);
             }
             setSelectedSubCategories(selectedSubCategories);
+            props.updateFunctions.subCategories(selectedSubCategories);
         }
         props.refresh.func(!props.refresh.key);
     }
@@ -76,8 +80,12 @@ function SearchFilter(props){
         if(checked){
             selectedSources.push(selectedSource);
             setSelectedSources(selectedSources);
+            props.updateFunctions.resources(selectedSources);
         }else{
             setSelectedSources(selectedSources.filter( source => 
+                source !== selectedSource
+                ));
+            props.updateFunctions.resources(selectedSources.filter( source => 
                 source !== selectedSource
                 ));
         }
@@ -139,7 +147,9 @@ function SearchFilter(props){
                         onChange={({ min, max }) => {
                             console.log(`min = ${min}, max = ${max}`)
                             setFromPrice(min);
+                            props.updateFunctions.fromPrice(min);
                             setToPrice(max);   
+                            props.updateFunctions.toPrice(max);
                         }}
                         />
                     <br />    
@@ -178,6 +188,14 @@ function SearchFilter(props){
                     })}
                     <br />
                 </div>
+                <br />
+                <Button className="formButton"
+                        onClick={()=> props.updateFunctions.search()} 
+                        variant="primary" 
+                        style={{"width":"80%","marginLeft":"auto","marginRight":"auto"}}>
+                            Apply
+                </Button>
+                <br />
             </Stack>}
         </Container>
     )

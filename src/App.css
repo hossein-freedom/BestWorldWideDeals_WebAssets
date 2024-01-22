@@ -37,6 +37,14 @@
   }
 }
 
+@media screen and (max-width: 991px){
+  :root{
+    padding-top: 115px;
+  }
+}
+
+@media screen and (min-width: 991px){
+
 :root{
   --viewWidth: 2000px;
   padding-top: 150px;
@@ -44,4 +52,11 @@
 
 .container-fluid{
   max-width: var(--viewWidth) !important;
+}
+}
+
+@media screen and (max-width: 349px) {
+  :root{
+    padding-top: 110px;
+  }
 }

@@ -16,7 +16,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import "./Header.css"
 import { Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faSliders} from "@fortawesome/free-solid-svg-icons";
 import API from '../../Utils/api/api'; 
 import { SEARCH_TERM } from '../../Utils/Constants';
 import { useDispatch } from 'react-redux';
@@ -59,12 +59,14 @@ function getWindowSize() {
 }
 
 function Header() {
+
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const [windowSize, setWindowSize] = useState(getWindowSize());
   const [selected, setSelected] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchData, setSearchData] = useState([]);
+  const currentUrl = window.location.href;
 
   useEffect(() => {
     function handleWindowResize() {
@@ -199,61 +201,61 @@ function Header() {
                 </section>
               </> :
               <>
-              <section style={{"position":"fixed", "width":"100%", "top":"0", "z-index":"10000"}}>
-                <Navbar bg="white" expand="lg">
-                  <Container fluid>
-                    <Navbar.Brand href="#">
-                      <Logo/>
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="`offcanvasNavbar-expand" />
-                    <Navbar.Offcanvas
-                        id={`offcanvasNavbar-expand`}
-                        aria-labelledby="offcanvasNavbarLabel-expand"
-                        placement="end"
-                        style={{"z-index":"12000"}}
-                    >
-                        <Offcanvas.Header closeButton>
-                          <Offcanvas.Title id={`offcanvasNavbarLabel-expand`}>
-                            <Button className="smallFavouriteButt">
-                              <span>0</span>
-                            </Button> 
-                          </Offcanvas.Title>
-                        </Offcanvas.Header>
-                        <Offcanvas.Body>
-                          <Nav
-                              className="smallMenubar"
-                              style={{ maxHeight: '100px' }}
-                          > 
-                            {menuData.map(item =>  item.children == 0 ?   
-                                        <Nav.Link href={item.link}>{item.item}</Nav.Link> :
-                                        <NavDropdown title={item.item} id="basic-nav-dropdown">
-                                            {item.children.map( child => 
-                                                          <NavDropdown.Item href={child.link}>{child.item}</NavDropdown.Item>)}
-                                        </NavDropdown>)}
-                            
-                          </Nav>
-                        </Offcanvas.Body>  
-                    </Navbar.Offcanvas>
-                  </Container>
-                </Navbar>
-                <Navbar bg="hossein" expand="lg" className="menuNavbar">
-                  <Container fluid>
-                    <Typeahead
-                        id="small-search-bar"
-                        options={searchData}
-                        placeholder="Choose a state..."
-                        onChange={setSelected}
-                        onInputChange={text => {updateSearchItems(text)}}
-                        selected={selected}
-                    >
-                      <div className="rbt-aux">
-                          <button className="close" aria-label="Clear" onClick={search} type="button">
-                            <FontAwesomeIcon icon={faSearch}/>
-                          </button>
-                      </div>
-                    </Typeahead>
-                  </Container>
-                </Navbar>
+                <section style={{"position":"fixed", "width":"100%", "top":"0", "z-index":"10000"}}>
+                  <Navbar bg="white" expand="lg">
+                    <Container fluid>
+                      <Navbar.Brand href="#">
+                        <Logo/>
+                      </Navbar.Brand>
+                      <Navbar.Toggle aria-controls="`offcanvasNavbar-expand" />
+                      <Navbar.Offcanvas
+                          id={`offcanvasNavbar-expand`}
+                          aria-labelledby="offcanvasNavbarLabel-expand"
+                          placement="end"
+                          style={{"z-index":"12000"}}
+                      >
+                          <Offcanvas.Header closeButton>
+                            <Offcanvas.Title id={`offcanvasNavbarLabel-expand`}>
+                              <Button className="smallFavouriteButt">
+                                <span>0</span>
+                              </Button> 
+                            </Offcanvas.Title>
+                          </Offcanvas.Header>
+                          <Offcanvas.Body>
+                            <Nav
+                                className="smallMenubar"
+                                style={{ maxHeight: '100px' }}
+                            > 
+                              {menuData.map(item =>  item.children == 0 ?   
+                                          <Nav.Link href={item.link}>{item.item}</Nav.Link> :
+                                          <NavDropdown title={item.item} id="basic-nav-dropdown">
+                                              {item.children.map( child => 
+                                                            <NavDropdown.Item href={child.link}>{child.item}</NavDropdown.Item>)}
+                                          </NavDropdown>)}
+                              
+                            </Nav>
+                          </Offcanvas.Body>  
+                      </Navbar.Offcanvas>
+                    </Container>
+                  </Navbar>
+                  <Navbar bg="hossein" expand="lg" className="menuNavbar">
+                    <Container fluid>
+                      <Typeahead
+                          id="small-search-bar"
+                          options={searchData}
+                          placeholder="Choose a state..."
+                          onChange={setSelected}
+                          onInputChange={text => {updateSearchItems(text)}}
+                          selected={selected}
+                      >
+                        <div className="rbt-aux">
+                            <button className="close" aria-label="Clear" onClick={search} type="button">
+                              <FontAwesomeIcon icon={faSearch}/>
+                            </button>
+                        </div>
+                      </Typeahead>
+                    </Container>
+                  </Navbar>
                 </section>
               </>
   );
