@@ -4,37 +4,60 @@ import  Container  from 'react-bootstrap/Container';
 import './SearchFilter.css';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Stack from 'react-bootstrap/Stack';
-
+import { useSelector } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import api from '../../../Utils/api/api';
 import MultiRangeSlider from '../../Custom/multiRangeSelect/MultiRangeSlider'
+import { isRejected } from '@reduxjs/toolkit';
 
 function SearchFilter(props){
 
     const [fromPrice, setFromPrice] = useState(0);
     const [toPrice, setToPrice] = useState(1000);
-    const [selectedCategories, setSelectedCategories] = useState(props.categories.selected);
-    const [sources, setSources] = useState(props.sources);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedSources, setSelectedSources] = useState([]);
-    const [subCategories, setSubCategories] = useState(props.subCategories);
     const [selectedSubCategories, setSelectedSubCategories] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [isRefresh, setIsRefresh] = useState(false);
+
+
+    const searchProps = useSelector((state) => state.searchTerm.value);
 
     useEffect(()=>{
-        initiateSelectedSubCategories(selectedCategories);
-    },[])
-
-    const initiateSelectedSubCategories = (categories) => {
-        categories.map( category => {
-                selectedSubCategories[category] = [];
-                subCategories[category].forEach(subCategory=>
-                    selectedSubCategories[category].push(subCategory)
+        if(!props.smallView){
+            refereshFilters();
+        } else {
+            setSelectedCategories(props.categories.selected);
+            setSelectedSources(props.sources.selected);
+            setFromPrice(props.price.fromPrice);
+            setToPrice(props.price.toPrice);
+            initiateSelectedSubCategories(props.categories.selected);
+        }
+    }, [searchProps])
+      
+    const initiateSelectedSubCategories = (selectedCategories) => {
+        var tmpSelectedSubCategories = {};
+        selectedCategories.map( category => {
+            if(props.subCategories[category]){
+                tmpSelectedSubCategories[category] = [];
+                props.subCategories[category].forEach(subCategory=>
+                    tmpSelectedSubCategories[category].push(subCategory)
                 );
+            }
         });
         props.updateFunctions.categories(selectedCategories);   
-        setSelectedSubCategories(selectedSubCategories);
-        props.updateFunctions.subCategories(selectedSubCategories);
+        setSelectedSubCategories(tmpSelectedSubCategories);
+        props.updateFunctions.subCategories(tmpSelectedSubCategories);
+    }
+
+    const refereshFilters = () => {
+        setFromPrice(0);
+        setToPrice(1000);
+        setSelectedCategories([]);
+        setSelectedSources([]);
+        setSelectedSubCategories([]);
+        setIsRefresh(true);
     }
    
     const updateCategories = (checked, category) => {
@@ -42,7 +65,7 @@ function SearchFilter(props){
             selectedCategories.push(category);
             setSelectedCategories(selectedCategories);
             props.updateFunctions.categories(selectedCategories);   
-            selectedSubCategories[category] = subCategories[category];
+            selectedSubCategories[category] = props.subCategories[category];
             setSelectedSubCategories(selectedSubCategories);
             props.updateFunctions.subCategories(selectedSubCategories);
         }else if (checked === false && selectedCategories.includes(category)){
@@ -110,7 +133,7 @@ function SearchFilter(props){
                     onChange={(event) => updateCategories(event.target.checked, category)}
                 />} 
                 <div className="subCategroyDiv">
-                {subCategories[category].map( subCategory => selectedSubCategories[category] && selectedSubCategories[category].includes(subCategory) ? 
+                {props.subCategories[category].map( subCategory => selectedSubCategories[category] && selectedSubCategories[category].includes(subCategory) ? 
                     <Form.Check 
                         checked 
                         type="checkbox"
@@ -144,6 +167,8 @@ function SearchFilter(props){
                     <MultiRangeSlider
                         min={0}
                         max={1000}
+                        curMin={props.price.fromPrice}
+                        curMax={props.price.toPrice}
                         onChange={({ min, max }) => {
                             console.log(`min = ${min}, max = ${max}`)
                             setFromPrice(min);
@@ -151,7 +176,12 @@ function SearchFilter(props){
                             setToPrice(max);   
                             props.updateFunctions.toPrice(max);
                         }}
-                        />
+                        isSmallFilterShow={props.smallView}
+                        refresh={{
+                            val: isRefresh,
+                            func: setIsRefresh
+                        }}    
+                    />
                     <br />    
                 </div>
                 <div className="filterGroup">
@@ -159,7 +189,7 @@ function SearchFilter(props){
                         Categories & Subcategories:
                     </p>
                     {
-                        props.categories.values.map( category =>
+                        props.categories.values && props.categories.values.map( category =>
                             selectedCategories.includes(category) ?  
                                 getCategorySection(true ,category)
                                 :
@@ -172,7 +202,7 @@ function SearchFilter(props){
                     <p className="filterGroupTitle">
                         Source:
                     </p>
-                    {sources.map( source => {
+                    {props.sources.values.map( source => {
                         return selectedSources.includes(source) ? 
                                 <Form.Check 
                                     checked 
@@ -190,7 +220,7 @@ function SearchFilter(props){
                 </div>
                 <br />
                 <Button className="formButton"
-                        onClick={()=> props.updateFunctions.search()} 
+                        onClick={()=> props.updateFunctions.search(false)} 
                         variant="primary" 
                         style={{"width":"80%","marginLeft":"auto","marginRight":"auto"}}>
                             Apply

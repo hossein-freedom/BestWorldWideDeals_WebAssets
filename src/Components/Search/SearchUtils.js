@@ -74,7 +74,7 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
             };
             extraFilters.push(categoriesFilter);
         }
-        if(selectedSubCategories.length>0){
+        if( Object.values(selectedSubCategories).length > 0){
             const subCategoriesList = new Set();
             Object.values(selectedSubCategories).forEach( subCategories => 
                 subCategories.forEach(subCategory=> {

@@ -7,14 +7,14 @@ import './SearchResult.css';
 import SearchFilter from './SearchFilter/SearchFilter';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import api from '../../Utils/api/api';
+import API from '../../Utils/api/api';
 import {prepareSearchFilter} from './SearchUtils';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faSliders} from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
 
 function SearchResult(props){
 
@@ -30,7 +30,7 @@ function SearchResult(props){
     const [selectedCategories, setSelectedCatgories] = useState([]);
     const [subCategories, setSubCatgories] = useState({});
     const [selectedSubCategories, setSelectedSubCatgories] = useState({});
-
+    
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     
@@ -57,26 +57,64 @@ function SearchResult(props){
         const {innerWidth, innerHeight} = window;
         return {innerWidth, innerHeight};
     }
-  
+
     useEffect(() => {
-        getSearchResults();
+        API.getData({
+            url: "/getallproductsubcategories",
+            params: {}
+        }).then((response)=>{
+            const data = response.data.data;
+            setSubCatgories(data);
+            setCatgories(Object.keys(data));
+        });
+
+        API.getData({
+            url: "/getallproductsources",
+            params: {}
+        }).then((response)=>{
+            const data = response.data.data;
+            setResources(data);
+        });
+    },[]);
+
+
+    useEffect(() => {
+        setSelectedCatgories([]);
+        setSelectedSubCatgories([]);
+        setSelectedResources([]);
+        setToPrice(1000);
+        setFromPrice(0);
     },[searchProps]);
 
+    useEffect(() => {
+        getSearchResults(true);
+    },[searchProps]);
 
-    const getSearchResults = () => {
+    const getSearchResults = (isFreshSearch) => {
+        setKey(!key);
         setShow(false); // close the small filter menu
         if(!searchProps.searchType || !searchProps.searchValue){
             return;
         }
-        const searchFilter = prepareSearchFilter(searchProps.searchType, 
-                                                 searchProps.searchValue,
-                                                 selectedCategories,
-                                                 selectedSubCategories,
-                                                 toPrice,
-                                                 fromPrice,
-                                                 selectedResources);
+        const searchFilter = isFreshSearch === true ? 
+                                            prepareSearchFilter(searchProps.searchType, 
+                                                searchProps.searchValue,
+                                                [],
+                                                {},
+                                                1000,
+                                                0,
+                                                []
+                                                )
+                                            :
+                                            prepareSearchFilter(searchProps.searchType, 
+                                                searchProps.searchValue,
+                                                selectedCategories,
+                                                selectedSubCategories,
+                                                toPrice,
+                                                fromPrice,
+                                                selectedResources);     
         console.log("Searching for New Results");
-        api.postData({
+        API.postData({
             url: "/getproductsbyfilter",
             params: searchFilter,
             contentType: "application/json"
@@ -94,7 +132,23 @@ function SearchResult(props){
 
     return (
         <>
-        { windowSize.innerWidth < 992 && 
+        {searchData.length == 0 && 
+            <Container fluid className="searcResultContainer">
+                <div className="searchNotFoundDiv">
+                    <p className="notFoundTitle">
+                      Hmmm.....
+                    </p>
+                    <p className="notFoundText">
+                       Looks like we don't have any matches for <b>"{searchProps.searchValue}"</b> 
+                    </p>
+                    <p>
+                        Please check the spelling, try a more general term or check specific product category page.   
+                    </p>
+                </div>
+                {/* To Do : Add list of close products or some other suggestions here.*/}
+            </Container>
+        }
+        { windowSize.innerWidth < 992 && searchData.length > 0 && 
             <section style={{"position":"relative", "top":"0","width":"100%"}}>
                 <Navbar bg="small-extra-nav" expand="lg" className="smallExtraNavbar">
                     <Container fluid>
@@ -121,14 +175,19 @@ function SearchResult(props){
                                 <div>
                                     <SearchFilter
                                         categories={{
-                                            values:["test3","test777"],
-                                            selected:["test3"]
+                                            values: categories,
+                                            selected:selectedCategories
                                         }}
-                                        subCategories={{
-                                            test3:["test1","test2","test3","test4"],
-                                            test777:["test71","test72","test73"]
+                                        subCategories={subCategories}
+                                        sources={{
+                                            values:resources,
+                                            selected: selectedResources
                                         }}
-                                        sources={["Amazon","ClickBank"]}
+                                        price={{
+                                            fromPrice: fromPrice,
+                                            toPrice: toPrice
+                                        }}
+                                        smallView={true}
                                         refresh={{key:key, func: setKey}}
                                         updateFunctions={{  categories: setSelectedCatgories,
                                                             subCategories: setSelectedSubCatgories,
@@ -146,20 +205,25 @@ function SearchResult(props){
             </section>
         }
 
-        { windowSize.innerWidth >= 992 && 
+        { windowSize.innerWidth >= 992 && searchData.length > 0 &&  
         <Container fluid className="searcResultContainer">
             <Row>
                     <div className='searchResultsFilter'>
                         <SearchFilter
                           categories={{
-                            values:["test3","test777"],
-                            selected:["test3"]
+                            values: categories,
+                            selected:selectedCategories
                           }}
-                          subCategories={{
-                            test3:["test1","test2","test3","test4"],
-                            test777:["test71","test72","test73"]
+                          subCategories={subCategories}
+                          sources={{
+                            values:resources,
+                            selected: selectedResources
                           }}
-                          sources={["Amazon","ClickBank"]}
+                          price={{
+                            fromPrice: fromPrice,
+                            toPrice: toPrice
+                          }}
+                          smallView={false}
                           refresh={{key:key, func: setKey}}
                           updateFunctions={{  categories: setSelectedCatgories,
                                               subCategories: setSelectedSubCatgories,

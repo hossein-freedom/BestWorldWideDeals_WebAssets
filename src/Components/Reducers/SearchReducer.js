@@ -17,7 +17,12 @@ export const search = createSlice({
         // which detects changes to a "draft state" and produces a brand new
         // immutable state based off those changes.
         // Also, no return statement is required from these functions.
-        state.value = newValue.payload
+        if(state.value.searchType !== newValue.payload.searchType ||
+                                            state.value.searchValue !== newValue.payload.searchValue  ){
+                state.value = newValue.payload
+        }else{
+          return;
+        }
       },
       updateFiltersOpen: (state, idOpen) => {
         state.filterOpen = idOpen;

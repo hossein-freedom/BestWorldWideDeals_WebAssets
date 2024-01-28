@@ -3,7 +3,8 @@ import classnames from "classnames";
 import PropTypes from "prop-types";
 import "./MultiRangeSlider.css";
 
-const MultiRangeSlider = ({ min, max, onChange }) => {
+const MultiRangeSlider = ({ min, max,  curMin, curMax, onChange, isSmallFilterShow, refresh}) => {
+  
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
   const minValRef = useRef(null);
@@ -41,10 +42,22 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
     }
   }, [maxVal, getPercent]);
 
+  useEffect(() => {
+    if(refresh.val === true){
+      setMinVal(min);
+      setMaxVal(max);
+      refresh.func(false);
+    }else if(isSmallFilterShow == true){
+      setMinVal(curMin);
+      setMaxVal(curMax);
+    }
+  }, [refresh.val]);
+
+
   // Get min and max values when their state changes
   useEffect(() => {
     onChange({ min: minVal, max: maxVal });
-  }, [minVal, maxVal, onChange]);
+  }, [minVal, maxVal]);
 
   return (
     <div>
