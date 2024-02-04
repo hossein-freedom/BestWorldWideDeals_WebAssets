@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import AdminDashboard from './Components/Admin/AdminDashboard/AdminDashboard';
 import AdminProduct from './Components/Admin/AdminProduct/AdminProduct';
 import SearchResult from './Components/Search/SearchResult';
+import AdminLogin from './Components/Admin/AdminLogin/AdminLogin';
 
 
 function App() {
@@ -20,7 +21,10 @@ function App() {
       <>
         <Routes>
           <Route path="/" element={<Dashboard/>}></Route>
+          <Route path="/adminlogin" element={<AdminLogin/>}></Route>
           <Route path="/search" element={<SearchResult/>}></Route>
+          <Route path="/search/category/:categoryName" element={<SearchResult/>}></Route>
+          <Route path="/search/query/:query" element={<SearchResult/>}></Route>
           <Route path="/admin" element={<AdminDashboard/>}>
               {/* <Route path="product" element={<AdminProduct/>}/> */}
           </Route>

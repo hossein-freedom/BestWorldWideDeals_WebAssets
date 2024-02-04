@@ -3,7 +3,7 @@ import './Logo.css'
 function Logo(){
     return (
         <div class="logo-holder logo">
-            <a href="">
+            <a href="/">
                 <span>BestWorldWideDeals</span>
             </a>
       </div>

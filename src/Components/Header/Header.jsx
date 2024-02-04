@@ -23,7 +23,12 @@ import { useDispatch } from 'react-redux';
 
 const menuData = [
   {
-    item:"All",
+    item:"Home",
+    link:"/",
+    children:[]       
+  },
+  {
+    item:"All Products",
     link:"",
     children:[]       
   },
@@ -132,6 +137,7 @@ function Header() {
           operand: "AND",
           rightFilterNode: null
         },
+        searchType:"FILTERED",
         sort: {
           fieldName: "title",
           isAsc: true
@@ -139,12 +145,12 @@ function Header() {
       };
 
       API.postData({
-          url: "/getproductsbyfilter",
+          url: "/getproducts",
           params: searchFilter,
           contentType: "application/json"
       }).then((response)=>{
           const items = new Set();
-          const data = response.data.data;
+          const data = response.data.data.products;
           data.forEach(item => items.add(item.title));
           setSearchData([...items]);
       }).catch((error) => {

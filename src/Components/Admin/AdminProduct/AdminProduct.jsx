@@ -13,10 +13,13 @@ import { Breadcrumb, CloseButton, Image, ListGroup } from 'react-bootstrap';
 import API from '../../../Utils/api/api'; 
 import { useParams } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
+import { isUserLoggedIn } from '../../../Utils/CommonUtils';
+import { useNavigate } from "react-router-dom";
 
 
 function AdminProduct(){
 
+    const navigate = useNavigate();
     const { actionType } = useParams();
 
     const isEdit = ["delete","update"].includes(actionType);
@@ -68,6 +71,12 @@ function AdminProduct(){
         }).then((response)=>{
             setCategories(response.data.data);
         })
+    },[])
+
+    useEffect(() => {
+        if(!isUserLoggedIn()){
+            navigate("/adminlogin");
+        }
     },[])
 
     const fileRef = useRef();

@@ -1,68 +1,70 @@
 export const prepareSearchFilter = (searchType, searchValue, selectedCategories, selectedSubCategories, toPrice, fromPrice, selectedResources) => {
     var textSearchObj = {};
-    if(searchType == "exact"){
-        textSearchObj = {
-                filters: [
-                    {
+    if(searchValue.length > 0 ){
+        if(searchType == "exact"){
+            textSearchObj = {
+                    filters: [
+                        {
+                            fieldName: "title",
+                            fieldValue: `${searchValue}`,
+                            isNegate: false,
+                            operator: "EQUAL"
+                        },
+                        {
+                            fieldName: "title",
+                            fieldValue: `%${searchValue}`,
+                            isNegate: false,
+                            operator: "LIKE"
+                        },
+                        {
+                            fieldName: "title",
+                            fieldValue: `${searchValue}%`,
+                            isNegate: false,
+                            operator: "LIKE"
+                        },
+                        {
+                            fieldName: "title",
+                            fieldValue: `%${searchValue}%`,
+                            isNegate: false,
+                            operator: "LIKE"
+                        },
+                    ],
+                    operand: "OR"
+                };
+            }else{
+                const tokens = tokenizeSearchText(searchValue);
+                const filters = [];
+                tokens.forEach(token=>{
+                    filters.push({
                         fieldName: "title",
-                        fieldValue: `${searchValue}`,
+                        fieldValue: `${token}`,
                         isNegate: false,
                         operator: "EQUAL"
-                    },
-                    {
+                    });
+                    filters.push({
                         fieldName: "title",
-                        fieldValue: `%${searchValue}`,
+                        fieldValue: `%${token}`,
                         isNegate: false,
                         operator: "LIKE"
-                    },
-                    {
+                    });
+                    filters.push({
                         fieldName: "title",
-                        fieldValue: `${searchValue}%`,
+                        fieldValue: `${token}%`,
                         isNegate: false,
                         operator: "LIKE"
-                    },
-                    {
+                    });
+                    filters.push({
                         fieldName: "title",
-                        fieldValue: `%${searchValue}%`,
+                        fieldValue: `%${token}%`,
                         isNegate: false,
                         operator: "LIKE"
-                    },
-                ],
-                operand: "OR"
-            };
-        }else{
-            const tokens = tokenizeSearchText(searchValue);
-            const filters = [];
-            tokens.forEach(token=>{
-                filters.push({
-                    fieldName: "title",
-                    fieldValue: `${token}`,
-                    isNegate: false,
-                    operator: "EQUAL"
+                    });
                 });
-                filters.push({
-                    fieldName: "title",
-                    fieldValue: `%${token}`,
-                    isNegate: false,
-                    operator: "LIKE"
-                });
-                filters.push({
-                    fieldName: "title",
-                    fieldValue: `${token}%`,
-                    isNegate: false,
-                    operator: "LIKE"
-                });
-                filters.push({
-                    fieldName: "title",
-                    fieldValue: `%${token}%`,
-                    isNegate: false,
-                    operator: "LIKE"
-                });
-            });
-            textSearchObj = {
-                filters: filters,
-                operand: "OR"
-            };
+                textSearchObj = {
+                    filters: filters,
+                    operand: "OR"
+                };
+            }
         }
         const extraFilters = [];
         if(selectedCategories.length>0){ 
@@ -127,12 +129,33 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
                     operand: "AND",
                     rightFilterNode: extraSearchObj,
                     },
+                    searchType:"FILTERED",
                     sort: {
                     fieldName: "title",
                     isAsc: true
                     }
                 };
 };
+
+
+export const prepareSearchFilterForAll = () => {
+    return  {
+        page: {
+        pageNumber: 0,
+        pageSize: 500
+        },
+        predicateNode: {
+        leftFilterNode: [],
+        operand: "AND",
+        rightFilterNode: [],
+        },
+        searchType:"ALL",
+        sort: {
+        fieldName: "title",
+        isAsc: true
+        }
+    };
+}
 
 
 const tokenizeSearchText = (searchValue) => {

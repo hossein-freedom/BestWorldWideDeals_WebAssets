@@ -15,6 +15,19 @@ export const PRODUCT_SOURCES = [
 
 export const SEARCH_TERM = "search_term";
 
+export const CATEGORY_SEARCH = "CATEGORY_SEARCH";
+
+export const QUERY_SEARCH = "QUERY_SEARCH";
+
+export const TERM_SEARCH = "TERM_SEARCH";
+
+export const USER_LOGGED_IN = "LOGGED_IN";
+
+export const USER_LOGGED_OUT = "LOGGED_OUT";
+
+export const ADMIN_KEY = "Admin";
+
+
 const data = [
     {
       label: 'Alabama',

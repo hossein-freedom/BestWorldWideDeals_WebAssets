@@ -2,9 +2,11 @@
 
 import './AdminDashboard.css'
 import Container from 'react-bootstrap/Container';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom"; 
+import { isUserLoggedIn } from '../../../Utils/CommonUtils';
+import { ADMIN_KEY } from '../../../Utils/Constants';
 
 
 
@@ -14,7 +16,18 @@ function AdminDashboard(){
   
     const redirect = (path) => { 
         navigate(path); 
-    } 
+    }
+
+    const logout = () => {
+        window.sessionStorage.removeItem(ADMIN_KEY);
+        navigate("/adminlogin");
+    }
+    
+    useEffect(() => {
+        if(!isUserLoggedIn()){
+            navigate("/adminlogin");
+        }
+    },[])
     
     return (
         <Container fluid className="adminDashboard">
@@ -23,6 +36,8 @@ function AdminDashboard(){
                 <Button onClick={() => redirect("/admin/product/delete")}>Delete Product</Button>
                 <Button onClick={() => redirect("/admin/product/update")}>Update Product</Button>
                 <Button>List Products</Button>
+                <Button>Notifications</Button>
+                <Button onClick={() => logout()}>Logout</Button>
             </div>
         </Container>
     );

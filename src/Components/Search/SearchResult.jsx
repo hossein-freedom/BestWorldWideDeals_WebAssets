@@ -8,13 +8,17 @@ import SearchFilter from './SearchFilter/SearchFilter';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import API from '../../Utils/api/api';
-import {prepareSearchFilter} from './SearchUtils';
+import {prepareSearchFilter, prepareSearchFilterForAll} from './SearchUtils';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { CATEGORY_SEARCH, QUERY_SEARCH, SEARCH_TERM, TERM_SEARCH } from '../../Utils/Constants';
+import { useParams } from 'react-router-dom';
+
+
 
 function SearchResult(props){
 
@@ -30,15 +34,29 @@ function SearchResult(props){
     const [selectedCategories, setSelectedCatgories] = useState([]);
     const [subCategories, setSubCatgories] = useState({});
     const [selectedSubCategories, setSelectedSubCatgories] = useState({});
+    const [queryCategories, setQueryCatgories] = useState([]);
     
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     
     const searchProps = useSelector((state) => state.searchTerm.value);
     const isFilterOpen = useSelector((state) => state.searchTerm.filterOpen);
+
+    const { categoryName } = useParams();
+    const { query } = useParams();
     
-    const isSearch = () =>{
-        return window.location.href.includes("admin");
+    const typeOfSearch = () =>{
+        if (categoryName && window.location.href.includes("search")){
+            return CATEGORY_SEARCH;
+        }
+
+        if (query && window.location.href.includes("search")){
+            return QUERY_SEARCH;
+        }
+
+        if (window.location.href.includes("search")){
+            return TERM_SEARCH;
+        }
     }
     
     useEffect(() => {
@@ -58,25 +76,69 @@ function SearchResult(props){
         return {innerWidth, innerHeight};
     }
 
-    useEffect(() => {
-        API.getData({
-            url: "/getallproductsubcategories",
-            params: {}
-        }).then((response)=>{
-            const data = response.data.data;
-            setSubCatgories(data);
-            setCatgories(Object.keys(data));
-        });
+    // useEffect(() => {
+    //     API.getData({
+    //         url: "/getallproductsubcategories",
+    //         params: {}
+    //     }).then((response)=>{
+    //         const data = response.data.data;
+    //         setSubCatgories(data);
+    //         setCatgories(Object.keys(data));
+    //     });
 
-        API.getData({
-            url: "/getallproductsources",
-            params: {}
-        }).then((response)=>{
-            const data = response.data.data;
-            setResources(data);
-        });
-    },[]);
+    //     API.getData({
+    //         url: "/getallproductsources",
+    //         params: {}
+    //     }).then((response)=>{
+    //         const data = response.data.data;
+    //         setResources(data);
+    //     });
+    // },[]);
 
+
+    const getSearchFilterData = (isAll, searchFilter) => {
+        if (isAll) {
+            API.getData({
+                url: "/getallproductsubcategories",
+                params: {}
+            }).then((response)=>{
+                const data = response.data.data;
+                setSubCatgories(data);
+                setCatgories(Object.keys(data));
+            });
+    
+            API.getData({
+                url: "/getallproductsources",
+                params: {}
+            }).then((response)=>{
+                const data = response.data.data;
+                setResources(data);
+            });
+        } else {
+            API.postData({
+                url: "/getcategorysubcategorybyFilter",
+                params: searchFilter,
+                contentType: "application/json"
+            }).then((response)=>{
+                const data = response.data.data;
+                setSubCatgories(data);
+                setCatgories(Object.keys(data));
+            }).catch((error) => {
+                console.log(error);
+            });
+
+            API.postData({
+                url: "/getallproductsourcesbyfilter",
+                params: searchFilter,
+                contentType: "application/json"
+            }).then((response)=>{
+                const data = response.data.data;
+                setResources(data);
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+    }
 
     useEffect(() => {
         setSelectedCatgories([]);
@@ -90,49 +152,98 @@ function SearchResult(props){
         getSearchResults(true);
     },[searchProps]);
 
+
+    const getSearchFilterFilter = () => {
+        if (typeOfSearch() === TERM_SEARCH) { // if the search is test search, initiated from search bar.
+            return  prepareSearchFilter(searchProps.searchType, 
+                        searchProps.searchValue,
+                        [],
+                        {},
+                        1000,
+                        0,
+                        []
+                    )
+        }
+        if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
+            return  prepareSearchFilter("", 
+                        "",
+                        [categoryName],
+                        [],
+                        {},
+                        1000,
+                        0,
+                        []
+                    );
+        }
+
+    }
+
+    const getSearchFilter = (isFreshSearch) => {
+        if (typeOfSearch() === TERM_SEARCH) { // if the search is test search, initiated from search bar.
+            return  isFreshSearch === true ? 
+                    prepareSearchFilter(searchProps.searchType, 
+                        searchProps.searchValue,
+                        [],
+                        {},
+                        1000,
+                        0,
+                        []
+                        )
+                    :
+                    prepareSearchFilter(searchProps.searchType, 
+                        searchProps.searchValue,
+                        selectedCategories,
+                        selectedSubCategories,
+                        toPrice,
+                        fromPrice,
+                        selectedResources);
+
+        }
+        if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
+            return  prepareSearchFilter(searchProps.searchType, 
+                        searchProps.searchValue,
+                        [categoryName],
+                        selectedSubCategories,
+                        toPrice,
+                        fromPrice,
+                        selectedResources);
+
+        }
+
+    }
+
     const getSearchResults = (isFreshSearch) => {
         setKey(!key);
         setShow(false); // close the small filter menu
-        if(!searchProps.searchType || !searchProps.searchValue){
+        var searchType = typeOfSearch();
+
+        if(searchType === TERM_SEARCH && (!searchProps.searchType || !searchProps.searchValue)){
             return;
         }
-        const searchFilter = isFreshSearch === true ? 
-                                            prepareSearchFilter(searchProps.searchType, 
-                                                searchProps.searchValue,
-                                                [],
-                                                {},
-                                                1000,
-                                                0,
-                                                []
-                                                )
-                                            :
-                                            prepareSearchFilter(searchProps.searchType, 
-                                                searchProps.searchValue,
-                                                selectedCategories,
-                                                selectedSubCategories,
-                                                toPrice,
-                                                fromPrice,
-                                                selectedResources);     
-        console.log("Searching for New Results");
+        var searchFilter;
+        if(categoryName === "All"){
+            getSearchFilterData(true, {});   
+            searchFilter = prepareSearchFilterForAll();
+            //To Do: get all products with page number  
+        }else{
+            searchFilter = getSearchFilter(isFreshSearch);
+            getSearchFilterData(false, getSearchFilterFilter());    
+        }
         API.postData({
-            url: "/getproductsbyfilter",
+            url: "/getproducts",
             params: searchFilter,
             contentType: "application/json"
         }).then((response)=>{
-            const items = response.data.data;
+            const items = response.data.data.products;
             setSearchData([...items]);
         }).catch((error) => {
             console.log(error);
         });
     };
 
-    const getResultsByFilters = (textFilter, page) => {
-
-    };
-
     return (
         <>
-        {searchData.length == 0 && 
+        {searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
             <Container fluid className="searcResultContainer">
                 <div className="searchNotFoundDiv">
                     <p className="notFoundTitle">
@@ -148,7 +259,7 @@ function SearchResult(props){
                 {/* To Do : Add list of close products or some other suggestions here.*/}
             </Container>
         }
-        { windowSize.innerWidth < 992 && searchData.length > 0 && 
+        { windowSize.innerWidth < 992 && (searchData.length > 0 || categories.length > 0) &&  
             <section style={{"position":"relative", "top":"0","width":"100%"}}>
                 <Navbar bg="small-extra-nav" expand="lg" className="smallExtraNavbar">
                     <Container fluid>
@@ -202,10 +313,30 @@ function SearchResult(props){
                         </Navbar.Offcanvas>
                     </Container>
                 </Navbar>
+                <Container fluid className="smallSearchResult">
+                    {searchData.length === 0 && categories.length > 0 && 
+                        <div className="searchNotFoundDiv">
+                            <p className="notFoundTitle">
+                            Hmmm.....
+                            </p>
+                            <p className="notFoundText">
+                            Looks like we don't have any matches with selected filters. 
+                            </p>
+                            <p>
+                                Please change some of the filters and try again.   
+                            </p>
+                        </div>
+                    }  
+                    {searchData.length > 0 && categories.length > 0 && 
+                        <div className='searchResults'>
+                            <h1>Found Result</h1>
+                        </div>
+                    }                        
+                </Container>
             </section>
         }
 
-        { windowSize.innerWidth >= 992 && searchData.length > 0 &&  
+        { windowSize.innerWidth >= 992 && (searchData.length > 0 || categories.length > 0) &&  
         <Container fluid className="searcResultContainer">
             <Row>
                     <div className='searchResultsFilter'>
@@ -234,9 +365,24 @@ function SearchResult(props){
                                             }}
                         />
                     </div>
-                    <div className='searchResults'>
-                        <h1>{searchProps.searchValue}</h1>
-                    </div>
+                    {searchData.length === 0 && categories.length > 0 && 
+                        <div className='searchResults'>
+                           <p className="notFoundTitle">
+                            Hmmm.....
+                            </p>
+                            <p className="notFoundText">
+                            Looks like we don't have any matches with selected filters. 
+                            </p>
+                            <p>
+                                Please change some of the filters and try again.   
+                            </p>
+                        </div>
+                    }  
+                    {searchData.length > 0 && categories.length > 0 && 
+                        <div className='searchResults'>
+                            <h1>{searchProps.searchValue}</h1>
+                        </div>
+                    }
             </Row>
         </Container>
         }
