@@ -1,14 +1,13 @@
+
 'use strict';
 
-import constants from './DashboardConfig'
-import './Dashboard.css'
-import Container from 'react-bootstrap/Container';
-import Carousel from 'react-bootstrap/Carousel';
+import { Button, Card, Carousel, Container, Nav } from "react-bootstrap";
 import React, { useState } from 'react';
+import './SearchResultItem.css'
 
 
+function SearchResultItem(props){
 
-function Dashboard(){
     const [index, setIndex] = useState(0);
 
   const handleSelect = (selectedIndex, e) => {
@@ -18,8 +17,8 @@ function Dashboard(){
     const carouselItems = [
         {
             itemStyle: { 
-                backgroundImage: `url(${require('../../Images/Dashboard/Carousel/Image1-1.jpg')})`,
-                backgroundSize: "cover",
+                backgroundImage: `url(${require('../../../Images/Dashboard/Carousel/Image1-1.jpg')})`,
+                backgroundSize: "contain",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
             },
@@ -28,8 +27,8 @@ function Dashboard(){
         },
         {
             itemStyle: { 
-                backgroundImage: `url(${require('../../Images/Dashboard/Carousel/Image2.jpg')})`,
-                backgroundSize: "cover",
+                backgroundImage: `url(${require('../../../Images/Dashboard/Carousel/Image2.jpg')})`,
+                backgroundSize: "contain",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
             },
@@ -37,27 +36,29 @@ function Dashboard(){
             description: "Nulla vitae elit libero, a pharetra augue mollis interdum."
         }
     ];
-   
 
     return (
-        <Container fluid className="carouselWrapper">
+         <Card  className="resultCard">
+                <Card.Header>
                 <Carousel activeIndex={index} onSelect={handleSelect}>
                 {  carouselItems.map( carouselItem => { 
                         return(       
-                                <Carousel.Item className="customCarouselItem" style={carouselItem.itemStyle}>
-                                    <Carousel.Caption className="right-caption">
-                                        <h3>{carouselItem.caption}</h3>
-                                        <p>{carouselItem.description}</p>
-                                    </Carousel.Caption>
+                                <Carousel.Item className="customItem" style={carouselItem.itemStyle}>
                                 </Carousel.Item>
                         )
                     })
                 }
                 </Carousel>
-            {/* <div className="dashCont">
-            </div> */}
-        </Container>
+                </Card.Header>
+                <Card.Body>
+                    <Card.Title>Special title treatment</Card.Title>
+                    <Card.Text>
+                    With supporting text below as a natural lead-in to additional content.
+                    </Card.Text>
+                    <Button variant="primary">Go somewhere</Button>
+                </Card.Body>
+                </Card>
     );
 }
 
-export default Dashboard;
+export default SearchResultItem;

@@ -47,3 +47,8 @@ input[type=number] {
 .categoryTitle{
     font-weight: 600;
 }
+
+.formButton{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

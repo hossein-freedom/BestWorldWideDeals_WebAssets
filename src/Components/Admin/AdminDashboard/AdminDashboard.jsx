@@ -13,7 +13,7 @@ import { ADMIN_KEY } from '../../../Utils/Constants';
 function AdminDashboard(){
 
     const navigate = useNavigate(); 
-  
+
     const redirect = (path) => { 
         navigate(path); 
     }

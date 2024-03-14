@@ -21,42 +21,43 @@ import API from '../../Utils/api/api';
 import { SEARCH_TERM } from '../../Utils/Constants';
 import { useDispatch } from 'react-redux';
 
-const menuData = [
-  {
-    item:"Home",
-    link:"/",
-    children:[]       
-  },
-  {
-    item:"All Products",
-    link:"",
-    children:[]       
-  },
-  {
-    item:"Health",
-    link:"",
-    children:[]       
-  },
-  {
-    item:"Fitness",
-    link:"",
-    children:[]       
-  },
-  {
-    item:"More",
-    link:"",
-    children:[
-      {
-        item:"Home",
-        link:""       
-      },
-      {
-        item:"Garden",
-        link:"",      
-      }       
-    ]
-  }
-]
+// const menuData = [
+//   {
+//     item:"Home",
+//     link:"/",
+//     children:[]       
+//   },
+//   {
+//     item:"All Products",
+//     link:"/search/category/All",
+//     children:[]       
+//   },
+//   {
+//     item:"Health",
+//     link:"",
+//     children:[]       
+//   },
+//   {
+//     item:"Fitness",
+//     link:"",
+//     children:[]       
+//   },
+//   {
+//     item:"More",
+//     link:"",
+//     children:[
+//       {
+//         item:"Home",
+//         link:""       
+//       },
+//       {
+//         item:"Garden",
+//         link:"",      
+//       }       
+//     ]
+//   }
+// ]
+
 
 function getWindowSize() {
   const {innerWidth, innerHeight} = window;
@@ -71,6 +72,7 @@ function Header() {
   const [selected, setSelected] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchData, setSearchData] = useState([]);
+  const [menuData, setMenuData] = useState([]);
   const currentUrl = window.location.href;
 
   useEffect(() => {
@@ -84,6 +86,63 @@ function Header() {
       window.removeEventListener('resize', handleWindowResize);
     };
   }, []);
+
+  useEffect(() => {
+    getMenuData();
+  }, []);
+
+  const getMenuData = () => {
+    API.getData({
+      url: "/getallproductsubcategories",
+      params: {}
+  }).then((response)=>{
+      const data = response.data.data;
+      const menuList = [
+        {
+          item:"Home",
+          link:"/",
+          children:[]       
+        },
+        {
+          item:"All Products",
+          link:"/search/category/All",
+          children:[]       
+        }
+      ];
+      const categories = Object.keys(data);
+      const menuItems = 1;
+      var moreItems = undefined; 
+      for(let i=0 ; i<categories.length ; i++){
+          if(i >= menuItems){
+                if(moreItems===undefined){
+                  moreItems = {
+                    item:"More",
+                    link:"",
+                    children:[]
+                  };
+                }
+                moreItems.children.push(
+                    {
+                      item:categories[i],
+                      link:`/search/category/${categories[i]}`
+                    }
+                );
+          }else{
+            menuList.push(
+              {
+                item:categories[i],
+                link:`/search/category/${categories[i]}`,
+                children:[]
+              }
+            );
+          }
+      }
+      if(moreItems){
+        menuList.push(moreItems);
+      }
+      setMenuData(menuList);
+    });
+  }
 
   const search = () => {
     if(selected.length == 0 && searchInput.length == 0 ){

@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../../../Utils/api/api';
 import MultiRangeSlider from '../../Custom/multiRangeSelect/MultiRangeSlider'
 import { isRejected } from '@reduxjs/toolkit';
+import { isUserLoggedIn } from '../../../Utils/CommonUtils';
 
 function SearchFilter(props){
 
@@ -20,7 +21,6 @@ function SearchFilter(props){
     const [selectedSubCategories, setSelectedSubCategories] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [isRefresh, setIsRefresh] = useState(false);
-
 
     const searchProps = useSelector((state) => state.searchTerm.value);
 
@@ -82,9 +82,13 @@ function SearchFilter(props){
         if (checked === true){
             if(!selectedCategories.includes(category)){
                 selectedCategories.push(category);
+                setSelectedCategories(selectedCategories);
+                props.updateFunctions.categories(selectedCategories);
                 selectedSubCategories[category] = [];
             } 
             selectedSubCategories[category].push(subCategory);
+            setSelectedSubCategories(selectedSubCategories);
+            props.updateFunctions.subCategories(selectedSubCategories);
         }else if (checked === false){ 
             if (selectedSubCategories[category] && selectedSubCategories[category].length === 1){
                 setSelectedCategories(selectedCategories.filter( cat => category !== cat ));
@@ -218,14 +222,66 @@ function SearchFilter(props){
                     })}
                     <br />
                 </div>
-                <br />
+                {isUserLoggedIn() && 
+                <>
+                    <div className="filterGroup">
+                        <p className="filterGroupTitle">
+                            Activation Status:
+                        </p>
+                        <div key={"active-radio"} className="mb-3">
+                            <Form.Check
+                                label="Only Active"
+                                name="group-1"
+                                type="radio"
+                                id={"active-radio-1"}
+                                onChange={(e) =>  props.updateFunctions.activation(1)}
+                            />
+                            <Form.Check
+                                label="Only Not Active"
+                                name="group-1"
+                                type="radio"
+                                id={"active-radio-2"}
+                                onChange={(e) => props.updateFunctions.activation(2)}
+                            />
+                        </div>
+                    </div>
+                    <div className="filterGroup">
+                        <p className="filterGroupTitle">
+                            Expiration Status:
+                        </p>
+                        <div key={"expired-radio"} className="mb-3">
+                            <Form.Check
+                                label="Only Expired"
+                                name="group-2"
+                                type="radio"
+                                id={"expired-radio-1"}
+                                onChange={(e) => props.updateFunctions.expiry(1)}
+                            />
+                            <Form.Check
+                                label="Only Not Expired"
+                                name="group-2"
+                                type="radio"
+                                id={"expired-radio-2"}
+                                onChange={(e) => props.updateFunctions.expiry(2)}
+                            />
+                        </div>
+                    </div>
+                    <div className="filterGroup">
+                        <Form.Check style={{marginTop: "5px", marginBottom: "15px"}}
+                                    type="switch"
+                                    label="Only Sale Products"
+                                    id="no_radio"
+                                    onChange={(e) => props.updateFunctions.sale(e.target.checked)}
+                        />
+                    </div>
+                    </>                
+                }
                 <Button className="formButton"
                         onClick={()=> props.updateFunctions.search(false)} 
                         variant="primary" 
                         style={{"width":"80%","marginLeft":"auto","marginRight":"auto"}}>
                             Apply
                 </Button>
-                <br />
             </Stack>}
         </Container>
     )

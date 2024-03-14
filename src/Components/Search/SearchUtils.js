@@ -1,69 +1,62 @@
-export const prepareSearchFilter = (searchType, searchValue, selectedCategories, selectedSubCategories, toPrice, fromPrice, selectedResources) => {
-    var textSearchObj = {};
+export const prepareSearchFilter = (searchType, searchValue, selectedCategories, selectedSubCategories, toPrice, fromPrice, selectedResources, 
+                                    adminFilters) => {
+    var textFilters = [];
     if(searchValue.length > 0 ){
         if(searchType == "exact"){
-            textSearchObj = {
-                    filters: [
-                        {
-                            fieldName: "title",
-                            fieldValue: `${searchValue}`,
-                            isNegate: false,
-                            operator: "EQUAL"
-                        },
-                        {
-                            fieldName: "title",
-                            fieldValue: `%${searchValue}`,
-                            isNegate: false,
-                            operator: "LIKE"
-                        },
-                        {
-                            fieldName: "title",
-                            fieldValue: `${searchValue}%`,
-                            isNegate: false,
-                            operator: "LIKE"
-                        },
-                        {
-                            fieldName: "title",
-                            fieldValue: `%${searchValue}%`,
-                            isNegate: false,
-                            operator: "LIKE"
-                        },
-                    ],
-                    operand: "OR"
-                };
+            textFilters = [
+                            {
+                                fieldName: "title",
+                                fieldValue: `${searchValue}`,
+                                isNegate: false,
+                                operator: "EQUAL"
+                            },
+                            {
+                                fieldName: "title",
+                                fieldValue: `%${searchValue}`,
+                                isNegate: false,
+                                operator: "LIKE"
+                            },
+                            {
+                                fieldName: "title",
+                                fieldValue: `${searchValue}%`,
+                                isNegate: false,
+                                operator: "LIKE"
+                            },
+                            {
+                                fieldName: "title",
+                                fieldValue: `%${searchValue}%`,
+                                isNegate: false,
+                                operator: "LIKE"
+                            },
+                        ];
             }else{
                 const tokens = tokenizeSearchText(searchValue);
-                const filters = [];
                 tokens.forEach(token=>{
-                    filters.push({
+                    textFilters.push({
                         fieldName: "title",
                         fieldValue: `${token}`,
                         isNegate: false,
                         operator: "EQUAL"
                     });
-                    filters.push({
+                    textFilters.push({
                         fieldName: "title",
                         fieldValue: `%${token}`,
                         isNegate: false,
                         operator: "LIKE"
                     });
-                    filters.push({
+                    textFilters.push({
                         fieldName: "title",
                         fieldValue: `${token}%`,
                         isNegate: false,
                         operator: "LIKE"
                     });
-                    filters.push({
+                    textFilters.push({
                         fieldName: "title",
                         fieldValue: `%${token}%`,
                         isNegate: false,
                         operator: "LIKE"
                     });
                 });
-                textSearchObj = {
-                    filters: filters,
-                    operand: "OR"
-                };
             }
         }
         const extraFilters = [];
@@ -112,8 +105,49 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
             isNegate: false,
             operator: "LE"
         };
+       
         extraFilters.push(fromPriceFilter);
         extraFilters.push(toPriceFilter);
+
+        //Admin Filters    
+        if (adminFilters){
+            if(adminFilters["activationFilter"] && adminFilters["activationFilter"] > 0){
+                var activationFilter = {
+                    fieldName: "isActive",
+                    fieldValue: adminFilters["activationFilter"] === 1 ? true : false,
+                    isNegate: false,
+                    operator: "EQUAL"
+                };
+                extraFilters.push(activationFilter);
+            }
+            if(adminFilters["saleFilter"] && adminFilters["saleFilter"] === true){
+                var isOnSaleActivation = {
+                    fieldName: "isOnSale",
+                    fieldValue: true,
+                    isNegate: false,
+                    operator: "EQUAL"
+                };
+                extraFilters.push(isOnSaleActivation);
+            }
+            if(adminFilters["expiryFilter"] && adminFilters["expiryFilter"] > 0){
+                const now = new Date()  
+                const milllisecondsSinceEpoch = now.getTime()  
+
+                var expiryActivation = {
+                    fieldName: "endDate",
+                    fieldValue: milllisecondsSinceEpoch,
+                    isNegate: false,
+                    operator: adminFilters["expiryFilter"] === 1 ? "LE" : "GE"
+                };
+                extraFilters.push(expiryActivation);
+            }
+        }
+
+        var textSearchObj = {
+            filters: textFilters,
+            operand: "OR"
+        };
+
         var extraSearchObj = {
             filters: extraFilters,
             operand: "AND"
@@ -121,18 +155,18 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
 
         return  {
                     page: {
-                    pageNumber: 0,
-                    pageSize: 500
+                        pageNumber: 0,
+                        pageSize: 500
                     },
                     predicateNode: {
-                    leftFilterNode: textSearchObj,
-                    operand: "AND",
-                    rightFilterNode: extraSearchObj,
+                        leftFilterNode: textSearchObj,
+                        operand: "AND",
+                        rightFilterNode: extraSearchObj,
                     },
                     searchType:"FILTERED",
                     sort: {
-                    fieldName: "title",
-                    isAsc: true
+                        fieldName: "title",
+                        isAsc: true
                     }
                 };
 };
@@ -141,18 +175,18 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
 export const prepareSearchFilterForAll = () => {
     return  {
         page: {
-        pageNumber: 0,
-        pageSize: 500
+            pageNumber: 0,
+            pageSize: 500
         },
         predicateNode: {
-        leftFilterNode: [],
-        operand: "AND",
-        rightFilterNode: [],
+            leftFilterNode: {},
+            operand: "AND",
+            rightFilterNode: {},
         },
         searchType:"ALL",
         sort: {
-        fieldName: "title",
-        isAsc: true
+            fieldName: "title",
+            isAsc: true
         }
     };
 }

@@ -17,10 +17,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { CATEGORY_SEARCH, QUERY_SEARCH, SEARCH_TERM, TERM_SEARCH } from '../../Utils/Constants';
 import { useParams } from 'react-router-dom';
-
+import { isUserLoggedIn } from '../../Utils/CommonUtils';
+import SearchResultItem from './SearchResultItem/SearchResultItem';
+import { useNavigate } from "react-router-dom"; 
 
 
 function SearchResult(props){
+
+    const navigate = useNavigate(); 
+
+    const testItems = [{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"}];
 
     const [show, setShow] = useState(false);
     const [key, setKey] = useState(true);
@@ -34,6 +40,9 @@ function SearchResult(props){
     const [selectedCategories, setSelectedCatgories] = useState([]);
     const [subCategories, setSubCatgories] = useState({});
     const [selectedSubCategories, setSelectedSubCatgories] = useState({});
+    const [activationFilter, setActivationFilter] = useState(0);
+    const [expiryFilter, setExpiryFilter] = useState(0);
+    const [saleFilter, setSaleFilter] = useState(false);
     const [queryCategories, setQueryCatgories] = useState([]);
     
     const handleClose = () => setShow(false);
@@ -58,7 +67,7 @@ function SearchResult(props){
             return TERM_SEARCH;
         }
     }
-    
+
     useEffect(() => {
         function handleWindowResize() {
           setWindowSize(getWindowSize());
@@ -75,26 +84,6 @@ function SearchResult(props){
         const {innerWidth, innerHeight} = window;
         return {innerWidth, innerHeight};
     }
-
-    // useEffect(() => {
-    //     API.getData({
-    //         url: "/getallproductsubcategories",
-    //         params: {}
-    //     }).then((response)=>{
-    //         const data = response.data.data;
-    //         setSubCatgories(data);
-    //         setCatgories(Object.keys(data));
-    //     });
-
-    //     API.getData({
-    //         url: "/getallproductsources",
-    //         params: {}
-    //     }).then((response)=>{
-    //         const data = response.data.data;
-    //         setResources(data);
-    //     });
-    // },[]);
-
 
     const getSearchFilterData = (isAll, searchFilter) => {
         if (isAll) {
@@ -161,21 +150,41 @@ function SearchResult(props){
                         {},
                         1000,
                         0,
-                        []
+                        [],
+                        {}
                     )
         }
         if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
-            return  prepareSearchFilter("", 
+            if (categoryName === "All"){
+                return  prepareSearchFilter("", 
+                            "",
+                            [],
+                            {},
+                            1000,
+                            0,
+                            [],
+                            {}
+                        );
+            } else {
+                return  prepareSearchFilter("", 
                         "",
                         [categoryName],
-                        [],
                         {},
                         1000,
                         0,
-                        []
+                        [],
+                        {}
                     );
+            }
         }
 
+    }
+    const getAdminFilters = () => {
+        return {
+            "activationFilter": activationFilter,
+            "expiryFilter": expiryFilter, 
+            "saleFilter": saleFilter
+        }
     }
 
     const getSearchFilter = (isFreshSearch) => {
@@ -187,7 +196,8 @@ function SearchResult(props){
                         {},
                         1000,
                         0,
-                        []
+                        [],
+                        {}
                         )
                     :
                     prepareSearchFilter(searchProps.searchType, 
@@ -196,7 +206,9 @@ function SearchResult(props){
                         selectedSubCategories,
                         toPrice,
                         fromPrice,
-                        selectedResources);
+                        selectedResources,
+                        getAdminFilters()
+                        );
 
         }
         if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
@@ -206,7 +218,9 @@ function SearchResult(props){
                         selectedSubCategories,
                         toPrice,
                         fromPrice,
-                        selectedResources);
+                        selectedResources,
+                        getAdminFilters()
+                        );
 
         }
 
@@ -222,8 +236,12 @@ function SearchResult(props){
         }
         var searchFilter;
         if(categoryName === "All"){
-            getSearchFilterData(true, {});   
-            searchFilter = prepareSearchFilterForAll();
+            getSearchFilterData(true, {});
+            if(isFreshSearch){   
+                searchFilter = prepareSearchFilterForAll();
+            }else{
+                searchFilter = getSearchFilter(isFreshSearch);
+            }
             //To Do: get all products with page number  
         }else{
             searchFilter = getSearchFilter(isFreshSearch);
@@ -240,6 +258,32 @@ function SearchResult(props){
             console.log(error);
         });
     };
+
+    const getResultRows = (searchResults) => {
+        var chunks = [];
+        var chunkSize = 0;
+        if (windowSize.innerWidth < 501){
+            chunkSize = 1;
+        } else if (windowSize.innerWidth < 1201){
+            chunkSize = 2;
+        } else {
+            chunkSize = 3;
+        }
+        while(searchResults.length > 0){
+            chunks.push(searchResults.splice(0, chunkSize));
+        }
+        if(chunks.length > 1 && (chunks[chunks.length-1].length < chunks[chunks.length-2].length)){
+            var diff = chunks[chunks.length-2].length - chunks[chunks.length-1].length;
+            var i = 0 ;
+            while(i < diff){
+                chunks[chunks.length-1].push({
+                    "mode": "test"
+                });
+                i++;
+            }
+        }
+        return chunks;
+    }
 
     return (
         <>
@@ -305,6 +349,9 @@ function SearchResult(props){
                                                             toPrice: setToPrice,
                                                             fromPrice: setFromPrice,
                                                             resources: setSelectedResources,
+                                                            activation: setActivationFilter,
+                                                            expiry: setExpiryFilter,
+                                                            sale: setSaleFilter,
                                                             search: getSearchResults  
                                                         }}
                                         />
@@ -329,7 +376,17 @@ function SearchResult(props){
                     }  
                     {searchData.length > 0 && categories.length > 0 && 
                         <div className='searchResults'>
-                            <h1>Found Result</h1>
+                            {getResultRows(testItems).map( row => 
+                                <Row className="justify-content-md-center">
+                                    {row.map( col => 
+                                        (col["mode"] && col["mode"] === "test") ? 
+                                        <Col> </Col> :
+                                        <Col>
+                                            <SearchResultItem/>
+                                        </Col>
+                                    )}
+                                </Row>
+                            )}
                         </div>
                     }                        
                 </Container>
@@ -361,6 +418,9 @@ function SearchResult(props){
                                               toPrice: setToPrice,
                                               fromPrice: setFromPrice,
                                               resources: setSelectedResources,
+                                              activation: setActivationFilter,
+                                              expiry: setExpiryFilter,
+                                              sale: setSaleFilter,
                                               search: getSearchResults    
                                             }}
                         />
@@ -380,8 +440,18 @@ function SearchResult(props){
                     }  
                     {searchData.length > 0 && categories.length > 0 && 
                         <div className='searchResults'>
-                            <h1>{searchProps.searchValue}</h1>
-                        </div>
+                        {getResultRows(testItems).map( row => 
+                            <Row className="justify-content-md-center">
+                                {row.map( col => 
+                                        (col["mode"] && col["mode"] === "test") ? 
+                                        <Col> </Col> :
+                                        <Col>
+                                            <SearchResultItem/>
+                                        </Col>
+                                    )}
+                            </Row>
+                        )}
+                    </div>
                     }
             </Row>
         </Container>

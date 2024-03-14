@@ -1,6 +1,5 @@
-.row{
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+.searchResults .row{
+  margin-bottom: 20px;   
 }
 
 .smallSearchResult{
@@ -12,7 +11,7 @@
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
     background-color: #ffffff;
     width: 20%;
-    height: auto;
+    height:fit-content;
 }
 
 .searchNotFoundDiv{
@@ -22,11 +21,6 @@
     border-radius: 15px;
     padding: 25px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-}
-
-.searchResults{
-    background-color: aquamarine;
-    height: 400px;
 }
 
 .smallExtraNavbar{
@@ -41,6 +35,12 @@
 .filterIcon{
     margin-left: auto !important;
     margin-right: auto !important;
+}
+
+@media screen and (min-width: 1201px){
+    .searcResultContainer{
+        padding-top: 50px;
+    }
 }
 
 @media screen and (max-width: 2000px) and (min-width: 1201px){
@@ -63,6 +63,10 @@
 }
 
 @media screen and (max-width: 1200px){
+    .searcResultContainer .row{
+        margin-left: 0 !important;
+        /* margin-right: 0 !important; */
+    }
     .searcResultContainer{
         padding-top: 30px;
     }
@@ -87,6 +91,7 @@
 @media screen and (min-width: 992px) {
     .searchResults{
         width: 75%;
+        padding-left: 26px;
     }
 
     .searchResultsFilter{
@@ -98,6 +103,7 @@
 @media screen and (min-width: 1400px) {
     .searchResults{
         width: 78%;
+        padding-left: 26px;
     }
 
     .searchResultsFilter{
@@ -108,6 +114,7 @@
 @media screen and (min-width: 1500px) {
     .searchResults{
         width: 80%;
+        padding-left: 24px;
     }
 
     .searchResultsFilter{
@@ -118,6 +125,7 @@
 @media screen and (min-width: 1600px) {
     .searchResults{
         width: 82%;
+        padding-left: 22px;
     }
 
     .searchResultsFilter{
@@ -128,6 +136,7 @@
 @media screen and (min-width: 1700px) {
     .searchResults{
         width: 83%;
+        padding-left: 20px;
     }
 
     .searchResultsFilter{
