@@ -48,7 +48,20 @@ input[type=number] {
     font-weight: 600;
 }
 
-.formButton{
+#filterFormButton{
     margin-top: 20px;
     margin-bottom: 20px;
+    background-color: #7123a1 !important;
+    color: #fff;
+    border: #7123a1;
+    font-weight:440;
+    font-size: 20px;
+}
+
+#filterFormButton:hover{
+    color: #fff;
+}
+
+#filterFormButton:active{
+    color: rgb(229, 196, 250);
 }

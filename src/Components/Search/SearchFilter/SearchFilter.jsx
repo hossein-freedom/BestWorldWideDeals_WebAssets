@@ -276,7 +276,7 @@ function SearchFilter(props){
                     </div>
                     </>                
                 }
-                <Button className="formButton"
+                <Button id="filterFormButton"
                         onClick={()=> props.updateFunctions.search(false)} 
                         variant="primary" 
                         style={{"width":"80%","marginLeft":"auto","marginRight":"auto"}}>

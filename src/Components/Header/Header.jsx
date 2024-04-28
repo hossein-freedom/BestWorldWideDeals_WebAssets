@@ -21,43 +21,6 @@ import API from '../../Utils/api/api';
 import { SEARCH_TERM } from '../../Utils/Constants';
 import { useDispatch } from 'react-redux';
 
-// const menuData = [
-//   {
-//     item:"Home",
-//     link:"/",
-//     children:[]       
-//   },
-//   {
-//     item:"All Products",
-//     link:"/search/category/All",
-//     children:[]       
-//   },
-//   {
-//     item:"Health",
-//     link:"",
-//     children:[]       
-//   },
-//   {
-//     item:"Fitness",
-//     link:"",
-//     children:[]       
-//   },
-//   {
-//     item:"More",
-//     link:"",
-//     children:[
-//       {
-//         item:"Home",
-//         link:""       
-//       },
-//       {
-//         item:"Garden",
-//         link:"",      
-//       }       
-//     ]
-//   }
-// ]
-
 
 function getWindowSize() {
   const {innerWidth, innerHeight} = window;
@@ -222,7 +185,7 @@ function Header() {
               <>
               <section style={{"position":"fixed", "width":"100%", "top":"0", "z-index":"10000"}}>
                 <Navbar bg="white" expand="lg">
-                  <Container fluid>
+                  <Container fluid className="headerContainer">
                     <Navbar.Brand href="#">
                       <Logo/>
                     </Navbar.Brand>
@@ -247,7 +210,7 @@ function Header() {
                   </Container>
                 </Navbar>
                 <Navbar bg="hossein" expand="lg" className="menuNavbar">
-                  <Container fluid>
+                  <Container fluid className="headerContainer">
                     <Nav
                         className="menubar"
                         style={{ maxHeight: '100px' }}
@@ -268,7 +231,7 @@ function Header() {
               <>
                 <section style={{"position":"fixed", "width":"100%", "top":"0", "z-index":"10000"}}>
                   <Navbar bg="white" expand="lg">
-                    <Container fluid>
+                    <Container fluid className="headerContainer">
                       <Navbar.Brand href="#">
                         <Logo/>
                       </Navbar.Brand>

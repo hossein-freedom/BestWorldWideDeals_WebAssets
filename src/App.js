@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../src/Components/Header/Header';
+import Footer from '../src/Components/Footer/Footer';
 import Dashboard from '../src/Components/Dashboard/Dashboard'
 import { Routes, Route } from "react-router-dom";
 import AdminDashboard from './Components/Admin/AdminDashboard/AdminDashboard';
@@ -31,6 +32,7 @@ function App() {
           <Route path="/admin/product/:actionType" element={<AdminProduct/>}/>
         </Routes>
       </>
+      <Footer/>
     </>
   );
 }

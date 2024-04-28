@@ -1,0 +1,113 @@
+
+
+.footerDiv{
+    height: 200px;
+}
+
+.footerSection{
+    width: 100%;
+    margin-top: 100px;
+    background-color: #192733;
+}
+
+.footerCol{
+    height: 150px;
+    color: #fff; 
+}
+
+.copyRightNote{
+    color: rgb(197, 193, 193);
+    /* text-align: center; */
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.socialMediaCol:hover{
+    cursor: pointer;
+    color: rgb(229, 196, 250);
+}
+
+#emailButton{
+    color: #fff;
+}
+
+#emailButton:hover{
+    background-color: rgb(229, 196, 250);
+    color: #192733;
+}
+
+#emailButton:active{
+    background-color: #7123a1;
+    color: #fff;
+}
+
+.footerNote{
+    font-size: 15px;
+    color: rgb(197, 193, 193);
+}
+
+.footerContainer{
+    padding-top: 50px;
+}
+
+@media screen and (min-width: 420px) {
+    .socialMediaRow{
+        width: 200px;
+        font-size: 40px;
+    }
+    .footerCol{
+       font-size: 25px;
+    }
+}
+
+@media screen and (max-width: 419px) {
+    .copyRightNote{
+        font-size: 14px;
+        padding-top: 10px;
+    }
+    .socialMediaCol{
+        height: 120px;
+    }
+    .emailCol{
+        height: 160px;
+    }
+    .footerCol{
+        height: 130px;
+    }
+    .socialMediaRow{
+        width: 160px;
+        font-size: 30px;
+    }
+    .footerCol{
+       font-size: 20px;
+    }
+    .footerNote{
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .emailInput{
+        width: 500px !important;
+    }
+}
+
+@media screen and (min-width: 440px) {
+    .emailInput{
+        width: 400px !important;
+    }
+}
+
+
+@media screen and (min-width: 1201px) and (max-width: 2000px){
+    .footerContainer{
+        padding-left: 45px;
+    }
+}
+
+@media screen and (max-width: 1200px){
+    .footerContainer{
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+}

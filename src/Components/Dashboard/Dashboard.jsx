@@ -41,7 +41,7 @@ function Dashboard(){
 
     return (
         <Container fluid className="carouselWrapper">
-                <Carousel activeIndex={index} onSelect={handleSelect}>
+                <Carousel activeIndex={index} onSelect={handleSelect} id="myCarousel">
                 {  carouselItems.map( carouselItem => { 
                         return(       
                                 <Carousel.Item className="customCarouselItem" style={carouselItem.itemStyle}>

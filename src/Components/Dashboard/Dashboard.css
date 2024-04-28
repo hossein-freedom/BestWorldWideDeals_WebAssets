@@ -14,9 +14,13 @@
     padding-top: 40px !important;
 }
 
-.carousel-inner{
+#myCarousel{
     border-radius: 15px !important; 
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+.carousel-inner{
+    border-radius: 15px !important; 
 }
 
 .carousel-caption{

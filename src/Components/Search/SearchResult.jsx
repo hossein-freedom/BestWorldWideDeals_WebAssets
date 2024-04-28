@@ -26,7 +26,118 @@ function SearchResult(props){
 
     const navigate = useNavigate(); 
 
-    const testItems = [{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"},{"name":"test"}];
+    const testItems = [
+        {
+          "id": 70,
+          "source": "AMAZON",
+          "isActive": true,
+          "bannerCode": "",
+          "category": "Category_test_1",
+          "subCategory": "Subcategory_test_1",
+          "sellerWebsite": "",
+          "affiliateLink": "https://www.google.com",
+          "email": "hossein_free@yahoo.com",
+          "price": 20,
+          "isOnSale": false,
+          "salePrice": 0,
+          "title": "test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 ",
+          "description": "test_333 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 " +  
+          " test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_2222",
+          "endDate": 1709164800000,
+          "imageLinks": [
+            {
+              "id": 71,
+              "p_id": 70,
+              "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/70/shutterstock_1165898884.jpg"
+            },
+            {
+                "id": 72,
+                "p_id": 70,
+                "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/72/shutterstock_379572148.jpg"
+              }
+          ],
+          "active": true,
+          "onSale": false
+        },
+        {
+          "id": 72,
+          "source": "ClickBank",
+          "isActive": false,
+          "bannerCode": "",
+          "category": "Category_test_2",
+          "subCategory": "Subcategory_test_2",
+          "sellerWebsite": "",
+          "affiliateLink": "https://www.google.com",
+          "email": "hossein_free@yahoo.com",
+          "price": 40,
+          "isOnSale": true,
+          "salePrice": 35,
+          "title": "test_2",
+          "description": "test_2",
+          "endDate": 1711670400000,
+          "imageLinks": [
+            {
+              "id": 73,
+              "p_id": 72,
+              "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/72/shutterstock_379572148.jpg"
+            }
+          ],
+          "active": false,
+          "onSale": true
+        }, 
+        {
+            "id": 70,
+            "source": "AMAZON",
+            "isActive": true,
+            "bannerCode": "",
+            "category": "Category_test_1",
+            "subCategory": "Subcategory_test_1",
+            "sellerWebsite": "",
+            "affiliateLink": "https://www.yahoo.com",
+            "email": "hossein_free@yahoo.com",
+            "price": 20,
+            "isOnSale": false,
+            "salePrice": 0,
+            "title": "test_1",
+            "description": "test_1",
+            "endDate": 1709164800000,
+            "imageLinks": [
+              {
+                "id": 71,
+                "p_id": 70,
+                "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/70/shutterstock_1165898884.jpg"
+              }
+            ],
+            "active": true,
+            "onSale": false
+          },
+          {
+            "id": 72,
+            "source": "ClickBank",
+            "isActive": false,
+            "bannerCode": "",
+            "category": "Category_test_2",
+            "subCategory": "Subcategory_test_2",
+            "sellerWebsite": "",
+            "affiliateLink": "https://www.msn.com",
+            "email": "hossein_free@yahoo.com",
+            "price": 40,
+            "isOnSale": true,
+            "salePrice": 35,
+            "title": "test_2",
+            "description": "test_2",
+            "endDate": 1711670400000,
+            "imageLinks": [
+              {
+                "id": 73,
+                "p_id": 72,
+                "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/72/shutterstock_379572148.jpg"
+              }
+            ],
+            "active": false,
+            "onSale": true
+          }
+      ]
 
     const [show, setShow] = useState(false);
     const [key, setKey] = useState(true);
@@ -262,16 +373,32 @@ function SearchResult(props){
     const getResultRows = (searchResults) => {
         var chunks = [];
         var chunkSize = 0;
+        
         if (windowSize.innerWidth < 501){
             chunkSize = 1;
         } else if (windowSize.innerWidth < 1201){
             chunkSize = 2;
-        } else {
+        } else if (windowSize.innerWidth < 1801){
             chunkSize = 3;
+        } else {
+            chunkSize = 4;
         }
+
         while(searchResults.length > 0){
             chunks.push(searchResults.splice(0, chunkSize));
         }
+
+        if(chunks.length == 1 && chunks[0].length < chunkSize){
+            var diff = chunkSize - chunks[0].length;
+            var i = 0 ;
+            while(i < diff){
+                chunks[0].push({
+                    "mode": "test"
+                });
+                i++;
+            }
+        }
+
         if(chunks.length > 1 && (chunks[chunks.length-1].length < chunks[chunks.length-2].length)){
             var diff = chunks[chunks.length-2].length - chunks[chunks.length-1].length;
             var i = 0 ;
@@ -382,7 +509,9 @@ function SearchResult(props){
                                         (col["mode"] && col["mode"] === "test") ? 
                                         <Col> </Col> :
                                         <Col>
-                                            <SearchResultItem/>
+                                            <SearchResultItem
+                                                product={col}
+                                            />
                                         </Col>
                                     )}
                                 </Row>
@@ -446,7 +575,9 @@ function SearchResult(props){
                                         (col["mode"] && col["mode"] === "test") ? 
                                         <Col> </Col> :
                                         <Col>
-                                            <SearchResultItem/>
+                                            <SearchResultItem
+                                                product={col}
+                                            />
                                         </Col>
                                     )}
                             </Row>

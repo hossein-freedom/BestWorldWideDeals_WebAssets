@@ -10,9 +10,13 @@ function SearchResultItem(props){
 
     const [index, setIndex] = useState(0);
 
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-  };
+    const handleSelect = (selectedIndex, e) => {
+        setIndex(selectedIndex);
+    };
+
+    const formatDescription = (description) => {
+        return description.substring(0, 150)+" ....";
+    }
 
     const carouselItems = [
         {
@@ -40,23 +44,29 @@ function SearchResultItem(props){
     return (
          <Card  className="resultCard">
                 <Card.Header>
-                <Carousel activeIndex={index} onSelect={handleSelect}>
-                {  carouselItems.map( carouselItem => { 
+                <Carousel activeIndex={index} onSelect={handleSelect} className="itemCarousel" style={{"box-shadow": "none"}}>
+                { props.product["imageLinks"] && props.product["imageLinks"].map( image => {
+                        var itemStyle = { 
+                            backgroundImage: `url(${image["imageLink"]})`,
+                            backgroundSize: "contain",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                        }
                         return(       
-                                <Carousel.Item className="customItem" style={carouselItem.itemStyle}>
+                                <Carousel.Item className="customItem" style={itemStyle}>
                                 </Carousel.Item>
                         )
                     })
                 }
                 </Carousel>
                 </Card.Header>
-                <Card.Body>
-                    <Card.Title>Special title treatment</Card.Title>
-                    <Card.Text>
-                    With supporting text below as a natural lead-in to additional content.
-                    </Card.Text>
-                    <Button variant="primary">Go somewhere</Button>
+                <Card.Body className="resultItemCard">
+                    <Card.Title className="resultItemTitle">{props.product.title}</Card.Title>
+                    <Card.Text className="resultItemText">
+                    {props.product.description}
+                    </Card.Text>    
                 </Card.Body>
+                <Button onClick={() => window.open(props.product.affiliateLink, "_blank")} id="dealButton" variant="primary">Learn More</Button>
                 </Card>
     );
 }

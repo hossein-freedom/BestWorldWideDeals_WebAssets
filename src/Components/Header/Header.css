@@ -129,10 +129,27 @@
     border-bottom: 2px solid #7123a1;
 }
 
-@media screen and (max-width: 1200px) {
+/* @media screen and (max-width: 1200px) {
     .navbar {
          padding-left: 0px; 
          padding-right: 0px;
+    }
+} */
+
+.headerContainer {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+@media screen and (max-width: 1200px) {
+    .navbar {
+         padding-left: 25px; 
+         padding-right: 25px;
+    }
+
+    .headerContainer {
+        padding-left: 0px;
+        padding-right: 0px;
     }
 }
 
