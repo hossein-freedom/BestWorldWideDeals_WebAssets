@@ -66,7 +66,7 @@ function AdminProduct(){
 
     useEffect(() => {
         API.getData({
-            url: "/getproductcategories",
+            url: "/api/getproductcategories",
             params: {}
         }).then((response)=>{
             setCategories(response.data.data);
@@ -83,7 +83,7 @@ function AdminProduct(){
 
     const getSubCategories = (category) => {
         API.getData({
-            url: `/getproductsubcategories/${category}`,
+            url: `/api/getproductsubcategories/${category}`,
             params: {}
         }).then((response)=>{
             setSubCategories(response.data.data);
@@ -93,7 +93,7 @@ function AdminProduct(){
     const getProductData = () => {
         setIsFormVisible(false);
         API.getData({
-            url: `/getproduct/${productIdForSearch}`,
+            url: `/api/getproduct/${productIdForSearch}`,
             params: {}
         }).then((response)=>{
             const product = response.data.data;
@@ -106,7 +106,7 @@ function AdminProduct(){
             const date = new Date(mill);
             setFormInitialValues({...product,expiryDate: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),files:[],otherSubCategory:'',otherCategory:''})
             API.getData({
-                url: `/getimagesforproduct/${product.id}`,
+                url: `/api/getimagesforproduct/${product.id}`,
                 params: {}
             }).then((response)=>{
                 setImagesForUpdate(response.data.data);
@@ -120,7 +120,7 @@ function AdminProduct(){
 
     const deleteProductData = () => {
         API.deleteData({
-            url: `/deleteproduct/${searchedProductId}`,
+            url: `/api/deleteproduct/${searchedProductId}`,
             params: {}
         }).then((response)=>{
             setModalMessage("Product was successfully Deleted.");
@@ -138,7 +138,7 @@ function AdminProduct(){
     const deleteProductImage = (image) => {
         const idList = [image.id]
         API.deleteData({
-            url: `/deleteimages`,
+            url: `/api/deleteimages`,
             params: {"ids": idList},
             contentType: "application/json"
         }).then((response)=>{
@@ -171,7 +171,7 @@ function AdminProduct(){
 
         }
         API.postData({
-            url: "/saveproduct",
+            url: "/api/saveproduct",
             params: prodData,
             contentType: "application/json"
         }).then((response)=>{
@@ -182,7 +182,7 @@ function AdminProduct(){
                     formData.append("images",element);
                 });
                 API.postData({
-                    url: `/uploadimages/${prodId}`,
+                    url: `/api/uploadimages/${prodId}`,
                     params: formData,
                     contentType: "multipart/form-data"
                 }).then((response)=>{
@@ -227,7 +227,7 @@ function AdminProduct(){
 
         }
         API.updateData({
-            url: `/updateproduct`,
+            url: `/api/updateproduct`,
             params: prodData,
             contentType: "application/json"
         }).then((response)=>{
@@ -238,7 +238,7 @@ function AdminProduct(){
                     formData.append("images",element);
                 });
                 API.postData({
-                    url: `/uploadimages/${prodId}`,
+                    url: `/api/uploadimages/${prodId}`,
                     params: formData,
                     contentType: "multipart/form-data"
                 }).then((response)=>{

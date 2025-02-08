@@ -199,7 +199,7 @@ function SearchResult(props){
     const getSearchFilterData = (isAll, searchFilter) => {
         if (isAll) {
             API.getData({
-                url: "/getallproductsubcategories",
+                url: "/api/getallproductsubcategories",
                 params: {}
             }).then((response)=>{
                 const data = response.data.data;
@@ -208,7 +208,7 @@ function SearchResult(props){
             });
     
             API.getData({
-                url: "/getallproductsources",
+                url: "/api/getallproductsources",
                 params: {}
             }).then((response)=>{
                 const data = response.data.data;
@@ -216,7 +216,7 @@ function SearchResult(props){
             });
         } else {
             API.postData({
-                url: "/getcategorysubcategorybyFilter",
+                url: "/api/getcategorysubcategorybyFilter",
                 params: searchFilter,
                 contentType: "application/json"
             }).then((response)=>{
@@ -228,7 +228,7 @@ function SearchResult(props){
             });
 
             API.postData({
-                url: "/getallproductsourcesbyfilter",
+                url: "/api/getallproductsourcesbyfilter",
                 params: searchFilter,
                 contentType: "application/json"
             }).then((response)=>{
@@ -359,7 +359,7 @@ function SearchResult(props){
             getSearchFilterData(false, getSearchFilterFilter());    
         }
         API.postData({
-            url: "/getproducts",
+            url: "/api/getproducts",
             params: searchFilter,
             contentType: "application/json"
         }).then((response)=>{

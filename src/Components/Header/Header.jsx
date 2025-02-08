@@ -56,7 +56,7 @@ function Header() {
 
   const getMenuData = () => {
     API.getData({
-      url: "/getallproductsubcategories",
+      url: "/api/getallproductsubcategories",
       params: {}
   }).then((response)=>{
       const data = response.data.data;
@@ -167,7 +167,7 @@ function Header() {
       };
 
       API.postData({
-          url: "/getproducts",
+          url: "/api/getproducts",
           params: searchFilter,
           contentType: "application/json"
       }).then((response)=>{

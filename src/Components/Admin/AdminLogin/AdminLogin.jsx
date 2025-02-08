@@ -25,7 +25,7 @@ function AdminLogin(){
             return;
         }
         api.getData({
-            url: `/login/${values.userName}/${values.password}`,
+            url: `/api/login/${values.userName}/${values.password}`,
             params: {}
         }).then((response)=>{
             window.sessionStorage.setItem(ADMIN_KEY, USER_LOGGED_IN);
