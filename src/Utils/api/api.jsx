@@ -3,12 +3,12 @@ import axios from 'axios'
 
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://localhost',
     headers: {
         'content-type':'application/octet-stream',
         'x-rapidapi-host':'example.com',
         'x-rapidapi-key': process.env.RAPIDAPI_KEY,
-        'Access-Control-Allow-Origin':  'http://127.0.0.1:8080',
+        'Access-Control-Allow-Origin':  'http://127.0.0.1',
         'Access-Control-Allow-Credentials': 'true'
     },
 });
