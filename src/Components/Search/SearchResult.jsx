@@ -7,6 +7,7 @@ import './SearchResult.css';
 import SearchFilter from './SearchFilter/SearchFilter';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { updateLoading } from '../Reducers/SearchReducer'
 import API from '../../Utils/api/api';
 import {prepareSearchFilter, prepareSearchFilterForAll} from './SearchUtils';
 import Nav from 'react-bootstrap/Nav';
@@ -20,10 +21,12 @@ import { useParams } from 'react-router-dom';
 import { isUserLoggedIn } from '../../Utils/CommonUtils';
 import SearchResultItem from './SearchResultItem/SearchResultItem';
 import { useNavigate } from "react-router-dom"; 
+import { useDispatch } from 'react-redux';
 
 
 function SearchResult(props){
-
+   
+    const dispatch = useDispatch()
     const navigate = useNavigate(); 
 
     const testItems = [
@@ -161,6 +164,8 @@ function SearchResult(props){
     
     const searchProps = useSelector((state) => state.searchTerm.value);
     const isFilterOpen = useSelector((state) => state.searchTerm.filterOpen);
+    const isLoading = useSelector((state) => state.searchTerm.loading);
+
 
     const { categoryName } = useParams();
     const { query } = useParams();
@@ -338,6 +343,7 @@ function SearchResult(props){
     }
 
     const getSearchResults = (isFreshSearch) => {
+        dispatch(updateLoading(true));
         setKey(!key);
         setShow(false); // close the small filter menu
         var searchType = typeOfSearch();
@@ -365,14 +371,19 @@ function SearchResult(props){
         }).then((response)=>{
             const items = response.data.data.products;
             setSearchData([...items]);
+            dispatch(updateLoading(false));
         }).catch((error) => {
             console.log(error);
+            dispatch(updateLoading(false));
         });
     };
 
-    const getResultRows = (searchResults) => {
+    const getResultRows = (searchData) => {
         var chunks = [];
         var chunkSize = 0;
+        var searchResults = [];
+        searchResults.push([...searchData]);
+
         
         if (windowSize.innerWidth < 501){
             chunkSize = 1;
@@ -392,7 +403,7 @@ function SearchResult(props){
             var diff = chunkSize - chunks[0].length;
             var i = 0 ;
             while(i < diff){
-                chunks[0].push({
+                chunks[0][0].push({
                     "mode": "test"
                 });
                 i++;
@@ -403,7 +414,7 @@ function SearchResult(props){
             var diff = chunks[chunks.length-2].length - chunks[chunks.length-1].length;
             var i = 0 ;
             while(i < diff){
-                chunks[chunks.length-1].push({
+                chunks[chunks.length-1][0].push({
                     "mode": "test"
                 });
                 i++;
@@ -414,7 +425,23 @@ function SearchResult(props){
 
     return (
         <>
-        {searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
+        { isLoading &&  
+            <Container fluid className="searcResultContainer">
+                <div className="searchNotFoundDiv">
+                    <p className="notFoundTitle">
+                      LOADING .....
+                    </p>
+                    <p className="notFoundText">
+                    LOADING LOADING LOADING LOADING LOADING LOADING LOADING 
+                    </p>
+                    <p>
+                    LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING
+                    </p>
+                </div>
+                {/* To Do : Add list of close products or some other suggestions here.*/}
+            </Container>
+        }
+        { !isLoading && searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
             <Container fluid className="searcResultContainer">
                 <div className="searchNotFoundDiv">
                     <p className="notFoundTitle">
@@ -430,7 +457,7 @@ function SearchResult(props){
                 {/* To Do : Add list of close products or some other suggestions here.*/}
             </Container>
         }
-        { windowSize.innerWidth < 992 && (searchData.length > 0 || categories.length > 0) &&  
+        { windowSize.innerWidth < 992 && (!isLoading && (searchData.length > 0 || categories.length > 0)) &&  
             <section style={{"position":"relative", "top":"0","width":"100%"}}>
                 <Navbar bg="small-extra-nav" expand="lg" className="smallExtraNavbar">
                     <Container fluid>
@@ -488,7 +515,7 @@ function SearchResult(props){
                     </Container>
                 </Navbar>
                 <Container fluid className="smallSearchResult">
-                    {searchData.length === 0 && categories.length > 0 && 
+                    {!isLoading && searchData.length === 0 && categories.length > 0 && 
                         <div className="searchNotFoundDiv">
                             <p className="notFoundTitle">
                             Hmmm.....
@@ -501,11 +528,11 @@ function SearchResult(props){
                             </p>
                         </div>
                     }  
-                    {searchData.length > 0 && categories.length > 0 && 
+                    {!isLoading && searchData.length > 0 && categories.length > 0 && 
                         <div className='searchResults'>
-                            {getResultRows(testItems).map( row => 
+                            {getResultRows(searchData).map( row => 
                                 <Row className="justify-content-md-center">
-                                    {row.map( col => 
+                                    {row[0].map( col => 
                                         (col["mode"] && col["mode"] === "test") ? 
                                         <Col> </Col> :
                                         <Col>
@@ -522,7 +549,7 @@ function SearchResult(props){
             </section>
         }
 
-        { windowSize.innerWidth >= 992 && (searchData.length > 0 || categories.length > 0) &&  
+        { windowSize.innerWidth >= 992 && (!isLoading && (searchData.length > 0 || categories.length > 0)) &&  
         <Container fluid className="searcResultContainer">
             <Row>
                     <div className='searchResultsFilter'>
@@ -554,7 +581,7 @@ function SearchResult(props){
                                             }}
                         />
                     </div>
-                    {searchData.length === 0 && categories.length > 0 && 
+                    {!isLoading && searchData.length === 0 && categories.length > 0 && 
                         <div className='searchResults'>
                            <p className="notFoundTitle">
                             Hmmm.....
@@ -567,11 +594,11 @@ function SearchResult(props){
                             </p>
                         </div>
                     }  
-                    {searchData.length > 0 && categories.length > 0 && 
+                    {!isLoading && searchData.length > 0 && categories.length > 0 && 
                         <div className='searchResults'>
-                        {getResultRows(testItems).map( row => 
+                        {getResultRows(searchData).map( row => 
                             <Row className="justify-content-md-center">
-                                {row.map( col => 
+                                {row[0].map( col => 
                                         (col["mode"] && col["mode"] === "test") ? 
                                         <Col> </Col> :
                                         <Col>
