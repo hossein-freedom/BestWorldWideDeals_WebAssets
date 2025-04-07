@@ -1,5 +1,5 @@
 export const prepareSearchFilter = (searchType, searchValue, selectedCategories, selectedSubCategories, toPrice, fromPrice, selectedResources, 
-                                    adminFilters) => {
+                                    adminFilters, pageNumber, pageSize) => {
     var textFilters = [];
     if(searchValue.length > 0 ){
         if(searchType == "exact"){
@@ -155,8 +155,8 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
 
         return  {
                     page: {
-                        pageNumber: 0,
-                        pageSize: 500
+                        pageNumber: pageNumber,
+                        pageSize: pageSize
                     },
                     predicateNode: {
                         leftFilterNode: textSearchObj,
@@ -172,11 +172,11 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
 };
 
 
-export const prepareSearchFilterForAll = () => {
+export const prepareSearchFilterForAll = (pageNumber: Number, pageSize: number) => {
     return  {
         page: {
-            pageNumber: 0,
-            pageSize: 500
+            pageNumber: pageNumber,
+            pageSize: pageSize
         },
         predicateNode: {
             leftFilterNode: {},

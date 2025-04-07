@@ -2,6 +2,11 @@
   margin-bottom: 20px;   
 }
 
+.searchHeader {
+  background-color: aqua;
+  width: 100%;
+}
+
 .smallSearchResult{
     margin-top: 25px;
     padding-left: 25px;

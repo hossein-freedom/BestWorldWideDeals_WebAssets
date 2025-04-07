@@ -29,118 +29,6 @@ function SearchResult(props){
     const dispatch = useDispatch()
     const navigate = useNavigate(); 
 
-    const testItems = [
-        {
-          "id": 70,
-          "source": "AMAZON",
-          "isActive": true,
-          "bannerCode": "",
-          "category": "Category_test_1",
-          "subCategory": "Subcategory_test_1",
-          "sellerWebsite": "",
-          "affiliateLink": "https://www.google.com",
-          "email": "hossein_free@yahoo.com",
-          "price": 20,
-          "isOnSale": false,
-          "salePrice": 0,
-          "title": "test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 ",
-          "description": "test_333 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 " +  
-          " test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1  test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_1 test_2222",
-          "endDate": 1709164800000,
-          "imageLinks": [
-            {
-              "id": 71,
-              "p_id": 70,
-              "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/70/shutterstock_1165898884.jpg"
-            },
-            {
-                "id": 72,
-                "p_id": 70,
-                "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/72/shutterstock_379572148.jpg"
-              }
-          ],
-          "active": true,
-          "onSale": false
-        },
-        {
-          "id": 72,
-          "source": "ClickBank",
-          "isActive": false,
-          "bannerCode": "",
-          "category": "Category_test_2",
-          "subCategory": "Subcategory_test_2",
-          "sellerWebsite": "",
-          "affiliateLink": "https://www.google.com",
-          "email": "hossein_free@yahoo.com",
-          "price": 40,
-          "isOnSale": true,
-          "salePrice": 35,
-          "title": "test_2",
-          "description": "test_2",
-          "endDate": 1711670400000,
-          "imageLinks": [
-            {
-              "id": 73,
-              "p_id": 72,
-              "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/72/shutterstock_379572148.jpg"
-            }
-          ],
-          "active": false,
-          "onSale": true
-        }, 
-        {
-            "id": 70,
-            "source": "AMAZON",
-            "isActive": true,
-            "bannerCode": "",
-            "category": "Category_test_1",
-            "subCategory": "Subcategory_test_1",
-            "sellerWebsite": "",
-            "affiliateLink": "https://www.yahoo.com",
-            "email": "hossein_free@yahoo.com",
-            "price": 20,
-            "isOnSale": false,
-            "salePrice": 0,
-            "title": "test_1",
-            "description": "test_1",
-            "endDate": 1709164800000,
-            "imageLinks": [
-              {
-                "id": 71,
-                "p_id": 70,
-                "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/70/shutterstock_1165898884.jpg"
-              }
-            ],
-            "active": true,
-            "onSale": false
-          },
-          {
-            "id": 72,
-            "source": "ClickBank",
-            "isActive": false,
-            "bannerCode": "",
-            "category": "Category_test_2",
-            "subCategory": "Subcategory_test_2",
-            "sellerWebsite": "",
-            "affiliateLink": "https://www.msn.com",
-            "email": "hossein_free@yahoo.com",
-            "price": 40,
-            "isOnSale": true,
-            "salePrice": 35,
-            "title": "test_2",
-            "description": "test_2",
-            "endDate": 1711670400000,
-            "imageLinks": [
-              {
-                "id": 73,
-                "p_id": 72,
-                "imageLink": "https://bwwd-listing-images.s3.us-east-2.amazonaws.com/72/shutterstock_379572148.jpg"
-              }
-            ],
-            "active": false,
-            "onSale": true
-          }
-      ]
 
     const [show, setShow] = useState(false);
     const [key, setKey] = useState(true);
@@ -158,6 +46,8 @@ function SearchResult(props){
     const [expiryFilter, setExpiryFilter] = useState(0);
     const [saleFilter, setSaleFilter] = useState(false);
     const [queryCategories, setQueryCatgories] = useState([]);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageSize, setPageSize] = useState(8);
     
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -267,7 +157,9 @@ function SearchResult(props){
                         1000,
                         0,
                         [],
-                        {}
+                        {},
+                        pageNumber, 
+                        pageSize
                     )
         }
         if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
@@ -279,7 +171,9 @@ function SearchResult(props){
                             1000,
                             0,
                             [],
-                            {}
+                            {},
+                            pageNumber, 
+                            pageSize
                         );
             } else {
                 return  prepareSearchFilter("", 
@@ -289,7 +183,9 @@ function SearchResult(props){
                         1000,
                         0,
                         [],
-                        {}
+                        {},
+                        pageNumber, 
+                        pageSize
                     );
             }
         }
@@ -313,7 +209,9 @@ function SearchResult(props){
                         1000,
                         0,
                         [],
-                        {}
+                        {},
+                        pageNumber, 
+                        pageSize
                         )
                     :
                     prepareSearchFilter(searchProps.searchType, 
@@ -323,7 +221,9 @@ function SearchResult(props){
                         toPrice,
                         fromPrice,
                         selectedResources,
-                        getAdminFilters()
+                        getAdminFilters(),
+                        pageNumber, 
+                        pageSize
                         );
 
         }
@@ -335,7 +235,9 @@ function SearchResult(props){
                         toPrice,
                         fromPrice,
                         selectedResources,
-                        getAdminFilters()
+                        getAdminFilters(),
+                        pageNumber, 
+                        pageSize
                         );
 
         }
@@ -355,7 +257,7 @@ function SearchResult(props){
         if(categoryName === "All"){
             getSearchFilterData(true, {});
             if(isFreshSearch){   
-                searchFilter = prepareSearchFilterForAll();
+                searchFilter = prepareSearchFilterForAll(pageNumber, pageSize);
             }else{
                 searchFilter = getSearchFilter(isFreshSearch);
             }
@@ -441,7 +343,7 @@ function SearchResult(props){
                 {/* To Do : Add list of close products or some other suggestions here.*/}
             </Container>
         }
-        { !isLoading && searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
+        {/* { !isLoading && searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
             <Container fluid className="searcResultContainer">
                 <div className="searchNotFoundDiv">
                     <p className="notFoundTitle">
@@ -454,9 +356,9 @@ function SearchResult(props){
                         Please check the spelling, try a more general term or check specific product category page.   
                     </p>
                 </div>
-                {/* To Do : Add list of close products or some other suggestions here.*/}
+                {/* To Do : Add list of close products or some other suggestions here.
             </Container>
-        }
+        } */}
         { windowSize.innerWidth < 992 && (!isLoading && (searchData.length > 0 || categories.length > 0)) &&  
             <section style={{"position":"relative", "top":"0","width":"100%"}}>
                 <Navbar bg="small-extra-nav" expand="lg" className="smallExtraNavbar">
@@ -595,6 +497,7 @@ function SearchResult(props){
                         </div>
                     }  
                     {!isLoading && searchData.length > 0 && categories.length > 0 && 
+                        <div className="searchHeader"> </div>
                         <div className='searchResults'>
                         {getResultRows(searchData).map( row => 
                             <Row className="justify-content-md-center">
