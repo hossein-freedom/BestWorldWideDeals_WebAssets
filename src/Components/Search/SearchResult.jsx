@@ -61,7 +61,7 @@ function SearchResult(props){
     const { query } = useParams();
     
     const typeOfSearch = () =>{
-        if (categoryName && window.location.href.includes("search")){
+        if (window.location.href.includes("category")){
             return CATEGORY_SEARCH;
         }
 
@@ -141,9 +141,6 @@ function SearchResult(props){
         setSelectedResources([]);
         setToPrice(1000);
         setFromPrice(0);
-    },[searchProps]);
-
-    useEffect(() => {
         getSearchResults(true);
     },[searchProps]);
 
@@ -230,7 +227,7 @@ function SearchResult(props){
         if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
             return  prepareSearchFilter(searchProps.searchType, 
                         searchProps.searchValue,
-                        [categoryName],
+                        categoryName === "All" ? selectedCategories : [categoryName],
                         selectedSubCategories,
                         toPrice,
                         fromPrice,
@@ -255,8 +252,8 @@ function SearchResult(props){
         }
         var searchFilter;
         if(categoryName === "All"){
-            getSearchFilterData(true, {});
             if(isFreshSearch){   
+                getSearchFilterData(true, {});
                 searchFilter = prepareSearchFilterForAll(pageNumber, pageSize);
             }else{
                 searchFilter = getSearchFilter(isFreshSearch);
@@ -297,15 +294,15 @@ function SearchResult(props){
             chunkSize = 4;
         }
 
-        while(searchResults.length > 0){
-            chunks.push(searchResults.splice(0, chunkSize));
+        while(searchResults.length > 0 && searchResults[0].length > 0){
+            chunks.push(searchResults[0].splice(0, chunkSize));
         }
 
         if(chunks.length == 1 && chunks[0].length < chunkSize){
             var diff = chunkSize - chunks[0].length;
             var i = 0 ;
             while(i < diff){
-                chunks[0][0].push({
+                chunks[0].push({
                     "mode": "test"
                 });
                 i++;
@@ -316,7 +313,7 @@ function SearchResult(props){
             var diff = chunks[chunks.length-2].length - chunks[chunks.length-1].length;
             var i = 0 ;
             while(i < diff){
-                chunks[chunks.length-1][0].push({
+                chunks[chunks.length-1].push({
                     "mode": "test"
                 });
                 i++;
@@ -327,7 +324,7 @@ function SearchResult(props){
 
     return (
         <>
-        { isLoading &&  
+        {/* { isLoading &&  
             <Container fluid className="searcResultContainer">
                 <div className="searchNotFoundDiv">
                     <p className="notFoundTitle">
@@ -339,11 +336,10 @@ function SearchResult(props){
                     <p>
                     LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING
                     </p>
-                </div>
-                {/* To Do : Add list of close products or some other suggestions here.*/}
+                </div>                
             </Container>
-        }
-        {/* { !isLoading && searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
+        } */}
+        { !isLoading && searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
             <Container fluid className="searcResultContainer">
                 <div className="searchNotFoundDiv">
                     <p className="notFoundTitle">
@@ -356,9 +352,9 @@ function SearchResult(props){
                         Please check the spelling, try a more general term or check specific product category page.   
                     </p>
                 </div>
-                {/* To Do : Add list of close products or some other suggestions here.
+                {/* To Do : Add list of close products or some other suggestions here. */}
             </Container>
-        } */}
+        }
         { windowSize.innerWidth < 992 && (!isLoading && (searchData.length > 0 || categories.length > 0)) &&  
             <section style={{"position":"relative", "top":"0","width":"100%"}}>
                 <Navbar bg="small-extra-nav" expand="lg" className="smallExtraNavbar">
@@ -389,7 +385,10 @@ function SearchResult(props){
                                             values: categories,
                                             selected:selectedCategories
                                         }}
-                                        subCategories={subCategories}
+                                        subCategories={{
+                                            values: subCategories,
+                                            selected: selectedSubCategories 
+                                        }}
                                         sources={{
                                             values:resources,
                                             selected: selectedResources
@@ -434,7 +433,7 @@ function SearchResult(props){
                         <div className='searchResults'>
                             {getResultRows(searchData).map( row => 
                                 <Row className="justify-content-md-center">
-                                    {row[0].map( col => 
+                                    {row.map( col => 
                                         (col["mode"] && col["mode"] === "test") ? 
                                         <Col> </Col> :
                                         <Col>
@@ -460,7 +459,10 @@ function SearchResult(props){
                             values: categories,
                             selected:selectedCategories
                           }}
-                          subCategories={subCategories}
+                          subCategories={{
+                            values: subCategories,
+                            selected: selectedSubCategories 
+                          }}
                           sources={{
                             values:resources,
                             selected: selectedResources
@@ -497,11 +499,11 @@ function SearchResult(props){
                         </div>
                     }  
                     {!isLoading && searchData.length > 0 && categories.length > 0 && 
-                        <div className="searchHeader"> </div>
+                        // <div className="searchHeader"> </div>
                         <div className='searchResults'>
                         {getResultRows(searchData).map( row => 
                             <Row className="justify-content-md-center">
-                                {row[0].map( col => 
+                                {row.map( col => 
                                         (col["mode"] && col["mode"] === "test") ? 
                                         <Col> </Col> :
                                         <Col>

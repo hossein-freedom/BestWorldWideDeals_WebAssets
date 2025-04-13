@@ -19,7 +19,7 @@ function App() {
   return (
     <>{console.log(window.location.href)}
       <Header/>
-      <>
+      <div className="appContainer">
         <Routes>
           <Route path="/" element={<Dashboard/>}></Route>
           <Route path="/adminlogin" element={<AdminLogin/>}></Route>
@@ -31,7 +31,7 @@ function App() {
           </Route>
           <Route path="/admin/product/:actionType" element={<AdminProduct/>}/>
         </Routes>
-      </>
+      </div>
       <Footer/>
     </>
   );

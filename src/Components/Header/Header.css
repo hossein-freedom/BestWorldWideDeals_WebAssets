@@ -69,12 +69,11 @@
     padding-left: 20px !important;
     padding-right: 20px !important;
     font-weight: bold !important;
+    color: #fff;
 }
 
-.nav-link{
-    /* color: rgb(24, 23, 23); */
-    color: white;
-
+.offcanvas-backdrop {
+    z-index: 1000;
 }
 
 .btn-primary {
@@ -129,6 +128,14 @@
     border-bottom: 2px solid #7123a1;
 }
 
+/* .offcanvas {
+    background-color: #212529;
+} */
+
+.offcanvas-backdrop.show{
+    opacity: 0.9;
+}
+
 /* @media screen and (max-width: 1200px) {
     .navbar {
          padding-left: 0px; 
@@ -173,7 +180,7 @@
     }
 
     .nav-link{
-        /* color: rgb(24, 23, 23); */
+        /* color: rgb(24, 23, 23); */ 
         color: black;
     
     }

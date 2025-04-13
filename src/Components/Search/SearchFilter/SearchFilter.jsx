@@ -25,23 +25,29 @@ function SearchFilter(props){
     const searchProps = useSelector((state) => state.searchTerm.value);
 
     useEffect(()=>{
-        if(!props.smallView){
-            refereshFilters();
-        } else {
-            setSelectedCategories(props.categories.selected);
-            setSelectedSources(props.sources.selected);
-            setFromPrice(props.price.fromPrice);
-            setToPrice(props.price.toPrice);
-            initiateSelectedSubCategories(props.categories.selected);
-        }
+        setSelectedCategories(props.categories.selected);
+        setSelectedSources(props.sources.selected);
+        setFromPrice(props.price.fromPrice);
+        setToPrice(props.price.toPrice);
+        setSelectedSubCategories(props.subCategories.selected);
+        // initiateSelectedSubCategories(props.categories.selected);
+        // if(!props.smallView){
+        //     refereshFilters();
+        // } else {
+        //     setSelectedCategories(props.categories.selected);
+        //     setSelectedSources(props.sources.selected);
+        //     setFromPrice(props.price.fromPrice);
+        //     setToPrice(props.price.toPrice);
+        //     initiateSelectedSubCategories(props.categories.selected);
+        // }
     }, [searchProps])
       
     const initiateSelectedSubCategories = (selectedCategories) => {
         var tmpSelectedSubCategories = {};
         selectedCategories.map( category => {
-            if(props.subCategories[category]){
+            if(props.subCategories.values[category]){
                 tmpSelectedSubCategories[category] = [];
-                props.subCategories[category].forEach(subCategory=>
+                props.subCategories.values[category].forEach(subCategory=>
                     tmpSelectedSubCategories[category].push(subCategory)
                 );
             }
@@ -65,7 +71,7 @@ function SearchFilter(props){
             selectedCategories.push(category);
             setSelectedCategories(selectedCategories);
             props.updateFunctions.categories(selectedCategories);   
-            selectedSubCategories[category] = props.subCategories[category];
+            selectedSubCategories[category] = props.subCategories.values[category];
             setSelectedSubCategories(selectedSubCategories);
             props.updateFunctions.subCategories(selectedSubCategories);
         }else if (checked === false && selectedCategories.includes(category)){
@@ -137,7 +143,7 @@ function SearchFilter(props){
                     onChange={(event) => updateCategories(event.target.checked, category)}
                 />} 
                 <div className="subCategroyDiv">
-                {props.subCategories[category].map( subCategory => selectedSubCategories[category] && selectedSubCategories[category].includes(subCategory) ? 
+                {props.subCategories.values[category].map( subCategory => selectedSubCategories[category] && selectedSubCategories[category].includes(subCategory) ? 
                     <Form.Check 
                         checked 
                         type="checkbox"

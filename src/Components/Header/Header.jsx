@@ -36,6 +36,7 @@ function Header() {
   const [searchInput, setSearchInput] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [menuData, setMenuData] = useState([]);
+  const [textInputRef, setTextInputRef] = useState(null);
   const currentUrl = window.location.href;
 
   useEffect(() => {
@@ -116,6 +117,7 @@ function Header() {
     }else if(searchInput.length > 0){
       dispatch(updateSearchTerm({searchType:"partial",searchValue:searchInput}));
     }
+    setSelected([]);
     navigate("/search");
   }
 
@@ -197,16 +199,22 @@ function Header() {
                       onChange={setSelected}
                       onInputChange={text => {updateSearchItems(text)}}
                       selected={selected}
+                      ref={setTextInputRef}
                     >
                       <div className="rbt-aux">
-                          <button className="close" aria-label="Clear" onClick={search} type="button">
+                          <button className="close" aria-label="Clear" onClick={() => {
+                                      textInputRef.blur();
+                                      search();
+                                  }} 
+                            type="button"
+                          >
                             <FontAwesomeIcon icon={faSearch}/>
                           </button>
                       </div>
                     </Typeahead>
-                    <Button className="favouriteButt">
+                    {/* <Button className="favouriteButt">
                       <span>0</span>
-                    </Button>
+                    </Button> */}
                   </Container>
                 </Navbar>
                 <Navbar bg="hossein" expand="lg" className="menuNavbar">
@@ -237,17 +245,18 @@ function Header() {
                       </Navbar.Brand>
                       <Navbar.Toggle aria-controls="`offcanvasNavbar-expand" />
                       <Navbar.Offcanvas
+                          className="smallHeaderCanvas"
                           id={`offcanvasNavbar-expand`}
                           aria-labelledby="offcanvasNavbarLabel-expand"
                           placement="end"
                           style={{"z-index":"12000"}}
                       >
                           <Offcanvas.Header closeButton>
-                            <Offcanvas.Title id={`offcanvasNavbarLabel-expand`}>
+                            {/* <Offcanvas.Title id={`offcanvasNavbarLabel-expand`}>
                               <Button className="smallFavouriteButt">
                                 <span>0</span>
                               </Button> 
-                            </Offcanvas.Title>
+                            </Offcanvas.Title> */}
                           </Offcanvas.Header>
                           <Offcanvas.Body>
                             <Nav
@@ -275,9 +284,13 @@ function Header() {
                           onChange={setSelected}
                           onInputChange={text => {updateSearchItems(text)}}
                           selected={selected}
+                          ref={setTextInputRef}
                       >
                         <div className="rbt-aux">
-                            <button className="close" aria-label="Clear" onClick={search} type="button">
+                            <button className="close" aria-label="Clear" onClick={() => {
+                                      textInputRef.blur();
+                                      search();
+                                  }}  type="button">
                               <FontAwesomeIcon icon={faSearch}/>
                             </button>
                         </div>
