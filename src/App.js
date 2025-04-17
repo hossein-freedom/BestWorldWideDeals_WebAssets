@@ -19,19 +19,19 @@ function App() {
   return (
     <>{console.log(window.location.href)}
       <Header/>
-      <div className="appContainer">
-        <Routes>
-          <Route path="/" element={<Dashboard/>}></Route>
-          <Route path="/adminlogin" element={<AdminLogin/>}></Route>
-          <Route path="/search" element={<SearchResult/>}></Route>
-          <Route path="/search/category/:categoryName" element={<SearchResult/>}></Route>
-          <Route path="/search/query/:query" element={<SearchResult/>}></Route>
-          <Route path="/admin" element={<AdminDashboard/>}>
-              {/* <Route path="product" element={<AdminProduct/>}/> */}
-          </Route>
-          <Route path="/admin/product/:actionType" element={<AdminProduct/>}/>
-        </Routes>
-      </div>
+        <div className="appContainer">
+          <Routes>
+            <Route path="/" element={<Dashboard/>}></Route>
+            <Route path="/adminlogin" element={<AdminLogin/>}></Route>
+            <Route path="/search" element={<SearchResult/>}></Route>
+            <Route path="/search/category/:categoryName" element={<SearchResult/>}></Route>
+            <Route path="/search/query/:query" element={<SearchResult/>}></Route>
+            <Route path="/admin" element={<AdminDashboard/>}>
+                {/* <Route path="product" element={<AdminProduct/>}/> */}
+            </Route>
+            <Route path="/admin/product/:actionType" element={<AdminProduct/>}/>
+          </Routes>
+        </div>
       <Footer/>
     </>
   );

@@ -48,6 +48,17 @@
     min-height: 100vh;
 } 
 
+#loadMoreButton{
+    margin-top: 50px;
+    margin-bottom: 20px;
+    background-color: #eee !important;
+    color: #7123a1;
+    font-weight:440;
+    font-size: 20px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    border: none;
+}
+
 @media screen and (min-width: 1201px){
     .searcResultContainer{
         padding-top: 50px;

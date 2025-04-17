@@ -66,6 +66,15 @@ function SearchFilter(props){
         setIsRefresh(true);
     }
    
+    const applyFilters = () => {
+        // props.updateFunctions.pageNum(0);
+        // props.updateFunctions.totalProductCount(0);
+        // props.updateFunctions.productCount(0);
+        // props.updateFunctions.searchData([]);
+        props.updateFunctions.search(false, true);
+    }
+
+
     const updateCategories = (checked, category) => {
         if (checked === true && !selectedCategories.includes(category)){
             selectedCategories.push(category);
@@ -283,7 +292,7 @@ function SearchFilter(props){
                     </>                
                 }
                 <Button id="filterFormButton"
-                        onClick={()=> props.updateFunctions.search(false)} 
+                        onClick={applyFilters} 
                         variant="primary" 
                         style={{"width":"80%","marginLeft":"auto","marginRight":"auto"}}>
                             Apply

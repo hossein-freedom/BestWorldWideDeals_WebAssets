@@ -22,7 +22,8 @@ import { isUserLoggedIn } from '../../Utils/CommonUtils';
 import SearchResultItem from './SearchResultItem/SearchResultItem';
 import { useNavigate } from "react-router-dom"; 
 import { useDispatch } from 'react-redux';
-
+import { Button } from 'react-bootstrap';
+import Loader from '../Custom/loader/Loader';
 
 function SearchResult(props){
    
@@ -47,6 +48,8 @@ function SearchResult(props){
     const [saleFilter, setSaleFilter] = useState(false);
     const [queryCategories, setQueryCatgories] = useState([]);
     const [pageNumber, setPageNumber] = useState(0);
+    const [productCount, setProductCount] = useState(0);
+    const [totalProductCount, setTotalProductCount] = useState(0);
     const [pageSize, setPageSize] = useState(8);
     
     const handleClose = () => setShow(false);
@@ -141,7 +144,7 @@ function SearchResult(props){
         setSelectedResources([]);
         setToPrice(1000);
         setFromPrice(0);
-        getSearchResults(true);
+        getSearchResults(true, false);
     },[searchProps]);
 
 
@@ -155,8 +158,8 @@ function SearchResult(props){
                         0,
                         [],
                         {},
-                        pageNumber, 
-                        pageSize
+                        0, 
+                        10000 // we want all the products
                     )
         }
         if (typeOfSearch() === CATEGORY_SEARCH) { // if the search is category search, initiated from user clicking on menu item.
@@ -169,8 +172,8 @@ function SearchResult(props){
                             0,
                             [],
                             {},
-                            pageNumber, 
-                            pageSize
+                            0, 
+                            10000 // we want all the products
                         );
             } else {
                 return  prepareSearchFilter("", 
@@ -181,8 +184,8 @@ function SearchResult(props){
                         0,
                         [],
                         {},
-                        pageNumber, 
-                        pageSize
+                        0, 
+                        10000 // we want all the products
                     );
             }
         }
@@ -196,7 +199,7 @@ function SearchResult(props){
         }
     }
 
-    const getSearchFilter = (isFreshSearch) => {
+    const getSearchFilter = (isFreshSearch, applyFilter) => {
         if (typeOfSearch() === TERM_SEARCH) { // if the search is test search, initiated from search bar.
             return  isFreshSearch === true ? 
                     prepareSearchFilter(searchProps.searchType, 
@@ -207,7 +210,7 @@ function SearchResult(props){
                         0,
                         [],
                         {},
-                        pageNumber, 
+                        applyFilter ? 0 : pageNumber, 
                         pageSize
                         )
                     :
@@ -219,7 +222,7 @@ function SearchResult(props){
                         fromPrice,
                         selectedResources,
                         getAdminFilters(),
-                        pageNumber, 
+                        applyFilter ? 0 : pageNumber, 
                         pageSize
                         );
 
@@ -233,7 +236,7 @@ function SearchResult(props){
                         fromPrice,
                         selectedResources,
                         getAdminFilters(),
-                        pageNumber, 
+                        applyFilter ? 0 : pageNumber, 
                         pageSize
                         );
 
@@ -241,7 +244,7 @@ function SearchResult(props){
 
     }
 
-    const getSearchResults = (isFreshSearch) => {
+    const getSearchResults = (isFreshSearch, applyFilter) => {
         dispatch(updateLoading(true));
         setKey(!key);
         setShow(false); // close the small filter menu
@@ -254,13 +257,13 @@ function SearchResult(props){
         if(categoryName === "All"){
             if(isFreshSearch){   
                 getSearchFilterData(true, {});
-                searchFilter = prepareSearchFilterForAll(pageNumber, pageSize);
+                searchFilter = prepareSearchFilterForAll(0, pageSize);
             }else{
-                searchFilter = getSearchFilter(isFreshSearch);
+                searchFilter = getSearchFilter(isFreshSearch, applyFilter);
             }
             //To Do: get all products with page number  
         }else{
-            searchFilter = getSearchFilter(isFreshSearch);
+            searchFilter = getSearchFilter(isFreshSearch, applyFilter);
             getSearchFilterData(false, getSearchFilterFilter());    
         }
         API.postData({
@@ -269,7 +272,17 @@ function SearchResult(props){
             contentType: "application/json"
         }).then((response)=>{
             const items = response.data.data.products;
-            setSearchData([...items]);
+            if (applyFilter) {
+                setPageNumber(1);    
+                setProductCount(items.length);
+                setSearchData(items);
+            } else {
+                setProductCount(productCount + response.data.data.products.length)
+                setPageNumber(pageNumber+1);
+                const combinedResults = searchData.concat(items);
+                setSearchData(combinedResults);
+            }
+            setTotalProductCount(response.data.data.totalResultNumber);
             dispatch(updateLoading(false));
         }).catch((error) => {
             console.log(error);
@@ -324,21 +337,9 @@ function SearchResult(props){
 
     return (
         <>
-        {/* { isLoading &&  
-            <Container fluid className="searcResultContainer">
-                <div className="searchNotFoundDiv">
-                    <p className="notFoundTitle">
-                      LOADING .....
-                    </p>
-                    <p className="notFoundText">
-                    LOADING LOADING LOADING LOADING LOADING LOADING LOADING 
-                    </p>
-                    <p>
-                    LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING LOADING
-                    </p>
-                </div>                
-            </Container>
-        } */}
+        { isLoading &&  
+            <Loader></Loader>
+        } 
         { !isLoading && searchData.length === 0 && categories.length === 0 && Object.keys(subCategories).length === 0 &&  
             <Container fluid className="searcResultContainer">
                 <div className="searchNotFoundDiv">
@@ -352,7 +353,6 @@ function SearchResult(props){
                         Please check the spelling, try a more general term or check specific product category page.   
                     </p>
                 </div>
-                {/* To Do : Add list of close products or some other suggestions here. */}
             </Container>
         }
         { windowSize.innerWidth < 992 && (!isLoading && (searchData.length > 0 || categories.length > 0)) &&  
@@ -407,7 +407,11 @@ function SearchResult(props){
                                                             activation: setActivationFilter,
                                                             expiry: setExpiryFilter,
                                                             sale: setSaleFilter,
-                                                            search: getSearchResults  
+                                                            search: getSearchResults,
+                                                            pageNum: setPageNumber,
+                                                            totalProductCount: setTotalProductCount,
+                                                            productCount: setProductCount,  
+                                                            searchData: setSearchData,
                                                         }}
                                         />
                                 </div>
@@ -473,16 +477,21 @@ function SearchResult(props){
                           }}
                           smallView={false}
                           refresh={{key:key, func: setKey}}
-                          updateFunctions={{  categories: setSelectedCatgories,
-                                              subCategories: setSelectedSubCatgories,
-                                              toPrice: setToPrice,
-                                              fromPrice: setFromPrice,
-                                              resources: setSelectedResources,
-                                              activation: setActivationFilter,
-                                              expiry: setExpiryFilter,
-                                              sale: setSaleFilter,
-                                              search: getSearchResults    
-                                            }}
+                          updateFunctions={{  
+                                            categories: setSelectedCatgories,
+                                            subCategories: setSelectedSubCatgories,
+                                            toPrice: setToPrice,
+                                            fromPrice: setFromPrice,
+                                            resources: setSelectedResources,
+                                            activation: setActivationFilter,
+                                            expiry: setExpiryFilter,
+                                            sale: setSaleFilter,
+                                            search: getSearchResults,
+                                            pageNum: setPageNumber,
+                                            totalProductCount: setTotalProductCount,
+                                            productCount: setProductCount,  
+                                            searchData: setSearchData,    
+                                        }}
                         />
                     </div>
                     {!isLoading && searchData.length === 0 && categories.length > 0 && 
@@ -514,7 +523,17 @@ function SearchResult(props){
                                     )}
                             </Row>
                         )}
-                    </div>
+                        {(totalProductCount - productCount) > 0 && 
+                            <Row className="justify-content-md-center">
+                                <Button id="loadMoreButton"
+                                        onClick={()=> getSearchResults(false, false)} 
+                                        variant="primary" 
+                                        style={{"width":"80%","marginLeft":"auto","marginRight":"auto"}}>
+                                    Load More Products
+                                </Button>
+                            </Row>
+                        }
+                        </div>
                     }
             </Row>
         </Container>

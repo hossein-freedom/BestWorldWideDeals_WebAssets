@@ -74,7 +74,7 @@ function Header() {
         }
       ];
       const categories = Object.keys(data);
-      const menuItems = 1;
+      const menuItems = 5;
       var moreItems = undefined; 
       for(let i=0 ; i<categories.length ; i++){
           if(i >= menuItems){

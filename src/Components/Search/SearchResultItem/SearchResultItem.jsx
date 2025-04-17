@@ -15,7 +15,7 @@ function SearchResultItem(props){
     };
 
     const formatDescription = (description) => {
-        return description.substring(0, 150)+" ....";
+        return description.substring(0, 100)+" ....";
     }
 
     const carouselItems = [
@@ -44,30 +44,34 @@ function SearchResultItem(props){
     return (
          <Card  className="resultCard">
                 <Card.Header>
-                <Carousel activeIndex={index} onSelect={handleSelect} className="itemCarousel" style={{"box-shadow": "none"}}>
-                { props.product["imageLinks"] && props.product["imageLinks"].map( image => {
-                        var itemStyle = { 
-                            backgroundImage: `url(${image["imageLink"]})`,
-                            backgroundSize: "contain",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                        }
-                        return(       
-                                <Carousel.Item className="customItem" style={itemStyle}>
-                                </Carousel.Item>
-                        )
-                    })
-                }
-                </Carousel>
+                    <Carousel activeIndex={index} onSelect={handleSelect} className="itemCarousel" style={{"box-shadow": "none"}}>
+                    { props.product["imageLinks"] && props.product["imageLinks"].map( image => {
+                            var itemStyle = { 
+                                backgroundImage: `url(${image["imageLink"]})`,
+                                backgroundSize: "contain",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                            }
+                            return(       
+                                    <Carousel.Item className="customItem" style={itemStyle}>
+                                    </Carousel.Item>
+                            )
+                        })
+                    }
+                    </Carousel>
                 </Card.Header>
                 <Card.Body className="resultItemCard">
                     <Card.Title className="resultItemTitle">{props.product.title}</Card.Title>
                     <Card.Text className="resultItemText">
-                    {props.product.description}
+                        {props.product.description}
                     </Card.Text>    
+                        <Card.Text className="resultItemPrice">
+                            <span className="originalPrice">${props.product.price}</span> 
+                            {props.product.isOnSale &&  <span className="salePrice">Was ${props.product.salePrice}</span>}
+                        </Card.Text> 
                 </Card.Body>
-                <Button onClick={() => window.open(props.product.affiliateLink, "_blank")} id="dealButton" variant="primary">Learn More</Button>
-                </Card>
+                <Button onClick={() => window.open(props.product.affiliateLink, "_blank")} id="dealButton" className="learnMoreButt" variant="primary">Learn More</Button>
+        </Card>
     );
 }
 
