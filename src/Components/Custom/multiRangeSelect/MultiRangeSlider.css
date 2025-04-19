@@ -56,6 +56,10 @@
     -webkit-tap-highlight-color: transparent;
   }
   
+  .thumbsContainer {
+    position: relative !important;
+  }
+
   .thumb {
     pointer-events: none;
     position: absolute;

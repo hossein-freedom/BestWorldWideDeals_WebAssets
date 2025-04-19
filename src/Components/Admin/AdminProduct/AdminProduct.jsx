@@ -13,7 +13,7 @@ import { Breadcrumb, CloseButton, Image, ListGroup } from 'react-bootstrap';
 import API from '../../../Utils/api/api'; 
 import { useParams } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
-import { isUserLoggedIn } from '../../../Utils/CommonUtils';
+import { camelString, isUserLoggedIn } from '../../../Utils/CommonUtils';
 import { useNavigate } from "react-router-dom";
 
 
@@ -154,10 +154,10 @@ function AdminProduct(){
 
     const handleSubmit = (values, resetForm) => {
         const prodData = {
-            "title": values.title,
-            "description": values.description,
-            "category": values.category === "Other" ? values.otherCategory : values.category,
-            "subCategory": values.subCategory === "Other" ? values.otherSubCategory : values.subCategory,
+            "title": values.title.toLowerCase(),
+            "description": values.description.toLowerCase(),
+            "category": values.category === "Other" ? camelString(values.otherCategory) : values.category,
+            "subCategory": values.subCategory === "Other" ? camelString(values.otherSubCategory) : values.subCategory,
             "email": values.email,
             "sellerWebsite": values.sellerWebsite,
             "affiliateLink": values.affiliateLink,
@@ -210,10 +210,10 @@ function AdminProduct(){
     const updateProductData = (values, resetForm) => {
         const prodData = {
             "id": searchedProductId, 
-            "title": values.title,
-            "description": values.description,
-            "category": values.category === "Other" ? values.otherCategory : values.category,
-            "subCategory": values.subCategory === "Other" ? values.otherSubCategory : values.subCategory,
+            "title": values.title.toLowerCase(),
+            "description": values.description.toLowerCase(),
+            "category": values.category === "Other" ? camelString(values.otherCategory) : values.category,
+            "subCategory": values.subCategory === "Other" ? camelString(values.otherSubCategory) : values.subCategory,
             "email": values.email,
             "sellerWebsite": values.sellerWebsite,
             "affiliateLink": values.affiliateLink,

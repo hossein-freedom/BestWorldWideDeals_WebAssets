@@ -20,6 +20,7 @@ import { faSearch, faSliders} from "@fortawesome/free-solid-svg-icons";
 import API from '../../Utils/api/api'; 
 import { SEARCH_TERM } from '../../Utils/Constants';
 import { useDispatch } from 'react-redux';
+import { camelString } from '../../Utils/CommonUtils';
 
 
 function getWindowSize() {
@@ -87,14 +88,14 @@ function Header() {
                 }
                 moreItems.children.push(
                     {
-                      item:categories[i],
+                      item: camelString(categories[i]),
                       link:`/search/category/${categories[i]}`
                     }
                 );
           }else{
             menuList.push(
               {
-                item:categories[i],
+                item:camelString(categories[i]),
                 link:`/search/category/${categories[i]}`,
                 children:[]
               }
@@ -113,9 +114,9 @@ function Header() {
         return;
     }
     if(selected.length > 0){
-      dispatch(updateSearchTerm({searchType:"exact",searchValue:selected[0]}));
+      dispatch(updateSearchTerm({searchType:"exact",searchValue:selected[0].toLowerCase()}));
     }else if(searchInput.length > 0){
-      dispatch(updateSearchTerm({searchType:"partial",searchValue:searchInput}));
+      dispatch(updateSearchTerm({searchType:"partial",searchValue:searchInput.toLowerCase()}));
     }
     setSelected([]);
     navigate("/search");
@@ -175,7 +176,7 @@ function Header() {
       }).then((response)=>{
           const items = new Set();
           const data = response.data.data.products;
-          data.forEach(item => items.add(item.title));
+          data.forEach(item => items.add(camelString(item.title)));
           setSearchData([...items]);
       }).catch((error) => {
           console.log(error);
@@ -197,7 +198,7 @@ function Header() {
                       options={searchData}
                       placeholder="Choose a state..."
                       onChange={setSelected}
-                      onInputChange={text => {updateSearchItems(text)}}
+                      onInputChange={text => {updateSearchItems(text.toLowerCase())}}
                       selected={selected}
                       ref={setTextInputRef}
                     >
@@ -282,7 +283,7 @@ function Header() {
                           options={searchData}
                           placeholder="Choose a state..."
                           onChange={setSelected}
-                          onInputChange={text => {updateSearchItems(text)}}
+                          onInputChange={text => {updateSearchItems(text.toLowerCase())}}
                           selected={selected}
                           ref={setTextInputRef}
                       >

@@ -18,14 +18,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { CATEGORY_SEARCH, QUERY_SEARCH, SEARCH_TERM, TERM_SEARCH } from '../../Utils/Constants';
 import { useParams } from 'react-router-dom';
-import { isUserLoggedIn } from '../../Utils/CommonUtils';
+import { camelString, isUserLoggedIn } from '../../Utils/CommonUtils';
 import SearchResultItem from './SearchResultItem/SearchResultItem';
 import { useNavigate } from "react-router-dom"; 
 import { useDispatch } from 'react-redux';
 import { Button } from 'react-bootstrap';
 import Loader from '../Custom/loader/Loader';
 
-function SearchResult(props){
+function SearchResult(props) {
    
     const dispatch = useDispatch()
     const navigate = useNavigate(); 
@@ -144,12 +144,15 @@ function SearchResult(props){
         setSelectedResources([]);
         setToPrice(1000);
         setFromPrice(0);
+        setPageNumber(0);
+        setProductCount(0);
+        setSearchData([]);
         getSearchResults(true, false);
     },[searchProps]);
 
 
     const getSearchFilterFilter = () => {
-        if (typeOfSearch() === TERM_SEARCH) { // if the search is test search, initiated from search bar.
+        if (typeOfSearch() === TERM_SEARCH) { // if the search is term search, initiated from search bar.
             return  prepareSearchFilter(searchProps.searchType, 
                         searchProps.searchValue,
                         [],
@@ -157,6 +160,7 @@ function SearchResult(props){
                         1000,
                         0,
                         [],
+                        null, 
                         {},
                         0, 
                         10000 // we want all the products
@@ -171,6 +175,7 @@ function SearchResult(props){
                             1000,
                             0,
                             [],
+                            null,
                             {},
                             0, 
                             10000 // we want all the products
@@ -183,6 +188,7 @@ function SearchResult(props){
                         1000,
                         0,
                         [],
+                        null,
                         {},
                         0, 
                         10000 // we want all the products
@@ -191,11 +197,11 @@ function SearchResult(props){
         }
 
     }
+
     const getAdminFilters = () => {
         return {
             "activationFilter": activationFilter,
             "expiryFilter": expiryFilter, 
-            "saleFilter": saleFilter
         }
     }
 
@@ -209,8 +215,9 @@ function SearchResult(props){
                         1000,
                         0,
                         [],
+                        false,
                         {},
-                        applyFilter ? 0 : pageNumber, 
+                        0, 
                         pageSize
                         )
                     :
@@ -221,6 +228,7 @@ function SearchResult(props){
                         toPrice,
                         fromPrice,
                         selectedResources,
+                        saleFilter,
                         getAdminFilters(),
                         applyFilter ? 0 : pageNumber, 
                         pageSize
@@ -235,6 +243,7 @@ function SearchResult(props){
                         toPrice,
                         fromPrice,
                         selectedResources,
+                        saleFilter,
                         getAdminFilters(),
                         applyFilter ? 0 : pageNumber, 
                         pageSize
@@ -264,15 +273,19 @@ function SearchResult(props){
             //To Do: get all products with page number  
         }else{
             searchFilter = getSearchFilter(isFreshSearch, applyFilter);
-            getSearchFilterData(false, getSearchFilterFilter());    
+            getSearchFilterData(false, getSearchFilterFilter(isFreshSearch));    
         }
         API.postData({
             url: "/api/getproducts",
             params: searchFilter,
             contentType: "application/json"
-        }).then((response)=>{
-            const items = response.data.data.products;
-            if (applyFilter) {
+        }).then((response) => {
+            const items = response.data.data.products.map( product => { 
+                    product.title = camelString(product.title);
+                    product.description = camelString(product.description);
+                    return product
+            });
+            if (isFreshSearch || applyFilter) {
                 setPageNumber(1);    
                 setProductCount(items.length);
                 setSearchData(items);
@@ -350,7 +363,7 @@ function SearchResult(props){
                        Looks like we don't have any matches for <b>"{searchProps.searchValue}"</b> 
                     </p>
                     <p>
-                        Please check the spelling, try a more general term or check specific product category page.   
+                        Please check the spelling, try a more general term or select a specific product category from the main menu.   
                     </p>
                 </div>
             </Container>
@@ -396,6 +409,15 @@ function SearchResult(props){
                                         price={{
                                             fromPrice: fromPrice,
                                             toPrice: toPrice
+                                        }}
+                                        saleFilter={{
+                                            value: saleFilter
+                                        }}
+                                        activationFilter={{
+                                            value: activationFilter
+                                        }}
+                                        expiryFilter={{
+                                            value: expiryFilter
                                         }}
                                         smallView={true}
                                         refresh={{key:key, func: setKey}}
@@ -474,6 +496,15 @@ function SearchResult(props){
                           price={{
                             fromPrice: fromPrice,
                             toPrice: toPrice
+                          }}
+                          saleFilter={{
+                            value: saleFilter
+                          }}
+                          activationFilter={{
+                            value: activationFilter
+                          }}
+                          expiryFilter={{
+                            value: expiryFilter
                           }}
                           smallView={false}
                           refresh={{key:key, func: setKey}}

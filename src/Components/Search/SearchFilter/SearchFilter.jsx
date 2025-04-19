@@ -237,6 +237,28 @@ function SearchFilter(props){
                     })}
                     <br />
                 </div>
+                { props.saleFilter.value == true  && 
+                    <div className="filterGroup">
+                            <Form.Check style={{marginTop: "5px", marginBottom: "15px"}}
+                                        checked
+                                        type="switch"
+                                        label="Only Sale Products"
+                                        id="no_radio"
+                                        onChange={(e) => props.updateFunctions.sale(e.target.checked)}
+                            />
+                    </div>
+                 }
+                 { props.saleFilter.value == false  && 
+                    <div className="filterGroup">
+                            <Form.Check style={{marginTop: "5px", marginBottom: "15px"}}
+                                        type="switch"
+                                        label="Only Sale Products"
+                                        id="no_radio"
+                                        onChange={(e) => props.updateFunctions.sale(e.target.checked)}
+                            />
+                    </div>
+                 }
+            
                 {isUserLoggedIn() && 
                 <>
                     <div className="filterGroup">
@@ -244,20 +266,85 @@ function SearchFilter(props){
                             Activation Status:
                         </p>
                         <div key={"active-radio"} className="mb-3">
-                            <Form.Check
-                                label="Only Active"
-                                name="group-1"
-                                type="radio"
-                                id={"active-radio-1"}
-                                onChange={(e) =>  props.updateFunctions.activation(1)}
-                            />
-                            <Form.Check
-                                label="Only Not Active"
-                                name="group-1"
-                                type="radio"
-                                id={"active-radio-2"}
-                                onChange={(e) => props.updateFunctions.activation(2)}
-                            />
+                            {/* activation filter */}
+                            { props.activationFilter.value ==  0 && 
+                            <>
+                                <Form.Check
+                                    checked
+                                    label="Both"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-0"}
+                                    onChange={(e) =>  props.updateFunctions.activation(0)}
+                                />
+                                <Form.Check
+                                    label="Only Active"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-1"}
+                                    onChange={(e) =>  props.updateFunctions.activation(1)}
+                                />
+                                <Form.Check
+                                    label="Only Not Active"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-2"}
+                                    onChange={(e) => props.updateFunctions.activation(2)}
+                                />
+                            </>
+                            }
+                            { props.activationFilter.value ==  1 && 
+                            <>
+                                <Form.Check
+                                    label="Both"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-0"}
+                                    onChange={(e) =>  props.updateFunctions.activation(0)}
+                                />
+                                <Form.Check
+                                    checked
+                                    label="Only Active"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-1"}
+                                    onChange={(e) =>  props.updateFunctions.activation(1)}
+                                />
+                                <Form.Check
+                                    label="Only Not Active"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-2"}
+                                    onChange={(e) => props.updateFunctions.activation(2)}
+                                />
+                            </>
+                            }
+                            { props.activationFilter.value ==  2 && 
+                            <>
+                                <Form.Check
+                                    label="Both"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-0"}
+                                    onChange={(e) =>  props.updateFunctions.activation(0)}
+                                />
+                                <Form.Check
+                                    label="Only Active"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-1"}
+                                    onChange={(e) =>  props.updateFunctions.activation(1)}
+                                />
+                                <Form.Check
+                                    checked
+                                    label="Only Not Active"
+                                    name="group-1"
+                                    type="radio"
+                                    id={"active-radio-2"}
+                                    onChange={(e) => props.updateFunctions.activation(2)}
+                                />
+                            </>
+                            }
                         </div>
                     </div>
                     <div className="filterGroup">
@@ -265,29 +352,86 @@ function SearchFilter(props){
                             Expiration Status:
                         </p>
                         <div key={"expired-radio"} className="mb-3">
-                            <Form.Check
-                                label="Only Expired"
-                                name="group-2"
-                                type="radio"
-                                id={"expired-radio-1"}
-                                onChange={(e) => props.updateFunctions.expiry(1)}
-                            />
-                            <Form.Check
-                                label="Only Not Expired"
-                                name="group-2"
-                                type="radio"
-                                id={"expired-radio-2"}
-                                onChange={(e) => props.updateFunctions.expiry(2)}
-                            />
+                            {/* expiry filter */}
+                            { props.expiryFilter.value ==  1 && 
+                            <>
+                                <Form.Check
+                                    label="Only Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-0"}
+                                    onChange={(e) => props.updateFunctions.expiry(0)}
+                                />
+                                <Form.Check
+                                    checked
+                                    label="Only Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-1"}
+                                    onChange={(e) => props.updateFunctions.expiry(1)}
+                                />
+                                <Form.Check
+                                    label="Only Not Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-2"}
+                                    onChange={(e) => props.updateFunctions.expiry(2)}
+                                />
+                            </>
+                            }
+                            { props.expiryFilter.value ==  2 && 
+                            <>  
+                                <Form.Check
+                                    label="Only Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-0"}
+                                    onChange={(e) => props.updateFunctions.expiry(0)}
+                                />
+                                <Form.Check
+                                    label="Only Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-1"}
+                                    onChange={(e) => props.updateFunctions.expiry(1)}
+                                />
+                                <Form.Check
+                                    checked
+                                    label="Only Not Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-2"}
+                                    onChange={(e) => props.updateFunctions.expiry(2)}
+                                />
+                            </>
+                            }
+                            { props.expiryFilter.value ==  0 && 
+                            <>  
+                                <Form.Check
+                                    checked
+                                    label="Only Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-0"}
+                                    onChange={(e) => props.updateFunctions.expiry(0)}
+                                />
+                                <Form.Check
+                                    label="Only Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-1"}
+                                    onChange={(e) => props.updateFunctions.expiry(1)}
+                                />
+                                <Form.Check
+                                    label="Only Not Expired"
+                                    name="group-2"
+                                    type="radio"
+                                    id={"expired-radio-2"}
+                                    onChange={(e) => props.updateFunctions.expiry(2)}
+                                />
+                            </>  
+                            }
                         </div>
-                    </div>
-                    <div className="filterGroup">
-                        <Form.Check style={{marginTop: "5px", marginBottom: "15px"}}
-                                    type="switch"
-                                    label="Only Sale Products"
-                                    id="no_radio"
-                                    onChange={(e) => props.updateFunctions.sale(e.target.checked)}
-                        />
                     </div>
                     </>                
                 }

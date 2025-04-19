@@ -1,5 +1,5 @@
 export const prepareSearchFilter = (searchType, searchValue, selectedCategories, selectedSubCategories, toPrice, fromPrice, selectedResources, 
-                                    adminFilters, pageNumber, pageSize) => {
+                                    saleFilter, adminFilters, pageNumber, pageSize) => {
     var textFilters = [];
     if(searchValue.length > 0 ){
         if(searchType == "exact"){
@@ -59,7 +59,7 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
                 });
             }
         }
-        const extraFilters = [];
+        var extraFilters = [];
         if(selectedCategories.length>0){ 
             var categoriesFilter = {
                 fieldName: "category",
@@ -105,12 +105,41 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
             isNegate: false,
             operator: "LE"
         };
+
+        if(saleFilter && saleFilter === true){
+            var isOnSaleActivation = {
+                fieldName: "isOnSale",
+                fieldValue: true,
+                isNegate: false,
+                operator: "EQUAL"
+            };
+            extraFilters.push(isOnSaleActivation);
+        }
        
         extraFilters.push(fromPriceFilter);
         extraFilters.push(toPriceFilter);
 
+        // include only active and not expired products 
+        var activationFilter = {
+            fieldName: "isActive",
+            fieldValue: true,
+            isNegate: false,
+            operator: "EQUAL"
+        };
+        const now = new Date(); 
+        const milllisecondsSinceEpoch = now.getTime(); 
+        extraFilters.push(activationFilter);
+        var expiryActivation = {
+            fieldName: "endDate",
+            fieldValue: milllisecondsSinceEpoch,
+            isNegate: false,
+            operator: "GE"
+        };
+        extraFilters.push(expiryActivation);
+
         //Admin Filters    
         if (adminFilters){
+            extraFilters = extraFilters.filter(filter => !['isActive','endDate'].includes(filter.fieldName)); 
             if(adminFilters["activationFilter"] && adminFilters["activationFilter"] > 0){
                 var activationFilter = {
                     fieldName: "isActive",
@@ -120,19 +149,8 @@ export const prepareSearchFilter = (searchType, searchValue, selectedCategories,
                 };
                 extraFilters.push(activationFilter);
             }
-            if(adminFilters["saleFilter"] && adminFilters["saleFilter"] === true){
-                var isOnSaleActivation = {
-                    fieldName: "isOnSale",
-                    fieldValue: true,
-                    isNegate: false,
-                    operator: "EQUAL"
-                };
-                extraFilters.push(isOnSaleActivation);
-            }
-            if(adminFilters["expiryFilter"] && adminFilters["expiryFilter"] > 0){
-                const now = new Date()  
-                const milllisecondsSinceEpoch = now.getTime()  
 
+            if(adminFilters["expiryFilter"] && adminFilters["expiryFilter"] > 0){
                 var expiryActivation = {
                     fieldName: "endDate",
                     fieldValue: milllisecondsSinceEpoch,

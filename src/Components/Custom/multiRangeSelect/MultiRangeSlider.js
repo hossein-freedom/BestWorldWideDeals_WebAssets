@@ -47,7 +47,7 @@ const MultiRangeSlider = ({ min, max,  curMin, curMax, onChange, isSmallFilterSh
       setMinVal(min);
       setMaxVal(max);
       refresh.func(false);
-    }else if(isSmallFilterShow == true){
+    } else {
       setMinVal(curMin);
       setMaxVal(curMax);
     }
@@ -60,7 +60,7 @@ const MultiRangeSlider = ({ min, max,  curMin, curMax, onChange, isSmallFilterSh
   }, [minVal, maxVal]);
 
   return (
-    <div>
+    <div class="thumbsContainer">
       <input
         type="range"
         min={min}

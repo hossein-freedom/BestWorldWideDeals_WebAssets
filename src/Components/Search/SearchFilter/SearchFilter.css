@@ -51,15 +51,15 @@ input[type=number] {
 #filterFormButton{
     margin-top: 20px;
     margin-bottom: 20px;
-    background-color: #7123a1 !important;
-    color: #fff;
-    border: #7123a1;
+    background-color: #eee !important;
+    color: #7123a1;
     font-weight:440;
     font-size: 20px;
+    border: none;
 }
 
 #filterFormButton:hover{
-    color: #fff;
+    color: #7123a1;
 }
 
 #filterFormButton:active{
